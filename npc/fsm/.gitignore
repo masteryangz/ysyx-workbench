@@ -1,0 +1,13 @@
+*.*
+constr/
+obj_dir/
+resource/
+!Makefile
+!*.mk
+!*.[cSh]
+!*.v
+!*.cc
+!*.cpp
+!.gitignore
+!README.md
+build/
