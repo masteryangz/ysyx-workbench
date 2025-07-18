@@ -19,6 +19,7 @@
 #include <common.h>
 
 static inline int check_reg_idx(int idx) {
+  //Log("idx = %d", idx);
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < MUXDEF(CONFIG_RVE, 16, 32)));
   return idx;
 }
@@ -26,6 +27,7 @@ static inline int check_reg_idx(int idx) {
 #define gpr(idx) (cpu.gpr[check_reg_idx(idx)])
 
 static inline const char* reg_name(int idx) {
+  //Log("idx = %d", idx);
   extern const char* regs[];
   return regs[check_reg_idx(idx)];
 }

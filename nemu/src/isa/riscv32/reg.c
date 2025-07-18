@@ -24,8 +24,29 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
+  for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); i++) {
+    bool success = false;
+    word_t value = isa_reg_str2val(regs[i], &success);
+    if (!success) {
+      printf("Error: Register %s not found\n", regs[i]);
+      continue; // Skip to the next register if the current one is not found
+    }
+    printf("%s: 0x%08x\n", regs[i], value);
+  }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  return 0;
+  //Log("size of regs: %zu", sizeof(regs) / sizeof(regs[0]));
+  if (strcmp(s, "pc") == 0) {
+    *success = true;
+    return cpu.pc; // Return the program counter value
+  }
+  for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); i++) {
+    if (strcmp(s, regs[i]) == 0) {
+      *success = true;
+      return cpu.gpr[i];
+    }
+  }
+  *success = false;
+  return 0; // Return 0 if the register name is not found
 }

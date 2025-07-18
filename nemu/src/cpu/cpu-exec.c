@@ -16,6 +16,8 @@
 #include <cpu/cpu.h>
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
+#include <monitor/sdb/watchpoint.h>
+#include <monitor/sdb/expr.h>
 #include <locale.h>
 
 /* The assembly code of instructions executed is only output to the screen
@@ -38,6 +40,23 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #endif
   if (g_print_step) { IFDEF(CONFIG_ITRACE, puts(_this->logbuf)); }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+#ifdef CONFIG_WATCHPOINT
+  for (WP *wp = wp_head; wp != NULL; wp = wp->next) {
+    bool success = false;
+    word_t value = expr(wp->expr, &success);
+    if (!success) {
+      panic("Watchpoint %d: expression '%s' is invalid", wp->NO, wp->expr);
+      return;
+    }
+    if (value != wp->value) {
+      nemu_state.state = NEMU_STOP;
+      printf("Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
+          wp->NO, wp->expr, wp->value, value);
+      set_value(wp, value);
+      return;
+    }
+  }
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {
