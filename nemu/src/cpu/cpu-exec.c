@@ -50,8 +50,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     }
     if (value != wp->value) {
       nemu_state.state = NEMU_STOP;
-      printf("Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
-          wp->NO, wp->expr, wp->value, value);
+      printf("pc = %08x: Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
+          _this->pc, wp->NO, wp->expr, wp->value, value);
       set_value(wp, value);
       return;
     }
