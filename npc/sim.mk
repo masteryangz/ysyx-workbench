@@ -32,7 +32,7 @@ VERILATOR_FLAGS += --Wno-fatal
 #VERILATOR_FLAGS += --debug
 # Add this trace to get a backtrace in gdb
 #VERILATOR_FLAGS += --gdbbt
-DESIGN = IF
+DESIGN = Top
 # Input files for Verilator
 # VERILATOR_INPUT = csrc/sim_main.cpp vsrc/$(DESIGN).v 
 VERILATOR_INPUT = csrc/sim_main.cpp build/$(DESIGN).sv 

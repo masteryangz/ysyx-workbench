@@ -1,11 +1,11 @@
 #include "verilated.h"
 #include "verilated_fst_c.h"
-#include "../obj_dir/VIF.h"
+#include "../obj_dir/VTop.h"
 
 VerilatedContext* contextp = NULL;
 VerilatedFstC* tfp = NULL;
 
-static VIF* top;
+static VTop* top;
 
 void step_and_dump_wave(){
   top->eval();
@@ -15,7 +15,7 @@ void step_and_dump_wave(){
 void sim_init(){
   contextp = new VerilatedContext;
   tfp = new VerilatedFstC;
-  top = new VIF;
+  top = new VTop;
   contextp->traceEverOn(true);
   top->trace(tfp, 0);
   tfp->open("dump.fst");
@@ -39,10 +39,8 @@ int main() {
   // read rom
   for (int i = 0; i < 5; i++) {
     step_and_dump_wave();
-    printf("PC = 0x%08x, instr = 0x%08x\n", top->io_pc, top->io_instr);
     top->clock = !top->clock;
     step_and_dump_wave();
-    //printf("PC = 0x%08x, instr = 0x%08x\n", top->io_pc, top->io_instr);
     top->clock = !top->clock;
     
   }
