@@ -12,6 +12,7 @@
 !.scalafmt.conf
 !README.md
 build/
+obj_dir/
 
 # mill
 !*.mill

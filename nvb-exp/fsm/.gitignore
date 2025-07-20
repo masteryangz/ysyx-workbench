@@ -1,0 +1,9 @@
+build/
+resource/
+constr/
+obj_dir/
+*.fst
+!vsrc/*
+!csrc/*
+!Makefile
+!nvb.mk
