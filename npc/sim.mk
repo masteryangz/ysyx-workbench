@@ -14,6 +14,7 @@ endif
 
 # Generate C++ in executable form
 VERILATOR_FLAGS += -cc --exe
+#VERILATOR_FLAGS += --dpi-c
 # Generate makefile dependencies (not shown as complicates the Makefile)
 #VERILATOR_FLAGS += -MMD
 # Optimize
@@ -33,9 +34,10 @@ VERILATOR_FLAGS += --Wno-fatal
 # Add this trace to get a backtrace in gdb
 #VERILATOR_FLAGS += --gdbbt
 DESIGN = Top
+VERILATOR_FLAGS += --top-module $(DESIGN)
 # Input files for Verilator
 # VERILATOR_INPUT = csrc/sim_main.cpp vsrc/$(DESIGN).v 
-VERILATOR_INPUT = csrc/sim_main.cpp build/$(DESIGN).sv 
+VERILATOR_INPUT = csrc/sim_main.cpp csrc/dpi.c vsrc/DPIEnd.v build/$(DESIGN).sv 
 
 all:
 	@echo "Write this Makefile by your self."
@@ -67,12 +69,15 @@ sim:
 
 	@echo
 	@echo "-- DONE --------------------"
-	@echo "To see waveforms, open dump.fst in a waveform viewer"
+	@echo "To see waveforms, make wave"
 	@echo
 
 
 ######################################################################
 # Other targets
+
+wave:
+	gtkwave dump.fst
 
 show-config:
 	$(VERILATOR) -V
