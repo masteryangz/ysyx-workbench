@@ -19,9 +19,11 @@ void sdb_mainloop();
 
 void engine_start() {
 #ifdef CONFIG_TARGET_AM
+  //Log("batch mode?");
   cpu_exec(-1);
 #else
   /* Receive commands from user. */
+  //Log("not batch mode");
   sdb_mainloop();
 #endif
 }

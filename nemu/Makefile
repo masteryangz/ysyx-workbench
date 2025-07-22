@@ -34,10 +34,16 @@ FILELIST_MK = $(shell find -L ./src -name "filelist.mk")
 include $(FILELIST_MK)
 
 # Filter out directories and files in blacklist to obtain the final set of source files
+#$(info DIRS-BLACKLIST = $(DIRS-BLACKLIST))
+#$(info DIRS-BLACKLIST-y = $(DIRS-BLACKLIST-y))
 DIRS-BLACKLIST-y += $(DIRS-BLACKLIST)
 SRCS-BLACKLIST-y += $(SRCS-BLACKLIST) $(shell find -L $(DIRS-BLACKLIST-y) -name "*.c")
 SRCS-y += $(shell find -L $(DIRS-y) -name "*.c")
 SRCS = $(filter-out $(SRCS-BLACKLIST-y),$(SRCS-y))
+#$(info SRCS-y = $(SRCS-y))
+#$(info DIRS-BLACKLIST = $(DIRS-BLACKLIST))
+#$(info DIRS-BLACKLIST-y = $(DIRS-BLACKLIST-y))
+#$(info SRCS = $(SRCS))
 
 # Extract compiler and options from menuconfig
 ifneq ($(CONFIG_CC),)
@@ -54,6 +60,7 @@ LDFLAGS += $(CFLAGS_BUILD)
 # Include rules for menuconfig
 include $(NEMU_HOME)/scripts/config.mk
 
+#$(info in nemu CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))
 ifdef CONFIG_TARGET_AM
 include $(AM_HOME)/Makefile
 LINKAGE += $(ARCHIVES)

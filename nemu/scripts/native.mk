@@ -33,8 +33,14 @@ NEMU_EXEC := $(BINARY) $(ARGS) $(IMG)
 
 run-env: $(BINARY) $(DIFF_REF_SO)
 
+runb: run-env
+	$(call git_commit, "run NEMU")
+#	$(info CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))
+	$(MAKE) run ARGS="$(ARGS) -b"
+
 run: run-env
 	$(call git_commit, "run NEMU")
+#	$(info CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))
 	$(NEMU_EXEC)
 
 gdb: run-env
@@ -47,4 +53,4 @@ $(clean-tools):
 clean-tools: $(clean-tools)
 clean-all: clean distclean clean-tools
 
-.PHONY: run gdb run-env clean-tools clean-all $(clean-tools)
+.PHONY: run runb gdb run-env clean-tools clean-all $(clean-tools)

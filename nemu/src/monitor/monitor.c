@@ -143,6 +143,7 @@ static long load_img() {
 }
 
 void am_init_monitor() {
+  //sdb_set_batch_mode();
   init_rand();
   init_mem();
   init_isa();
