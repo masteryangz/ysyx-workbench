@@ -19,6 +19,7 @@
 #include <monitor/sdb/watchpoint.h>
 #include <monitor/sdb/expr.h>
 #include <locale.h>
+#include <iringbuf.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -26,6 +27,7 @@
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
+ringbuf_t iringbuf;
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -83,10 +85,11 @@ static void exec_once(Decode *s, vaddr_t pc) {
   space_len = space_len * 3 + 1;
   memset(p, ' ', space_len);
   p += space_len;
-
+  //Log("%08x\n", s->isa.inst);
   void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte);
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
+  ringbuf_push(&iringbuf, MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
 #endif
 }
 
@@ -113,6 +116,7 @@ static void statistic() {
 void assert_fail_msg() {
   isa_reg_display();
   statistic();
+  print_ringbuf(&iringbuf);
 }
 
 /* Simulate how the CPU works. */
@@ -126,6 +130,7 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
+  ringbuf_init(&iringbuf);
 
   execute(n);
 

@@ -17,6 +17,7 @@
 #include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
+//#include <iringbuf.h>
 
 #define R(i) gpr(i)
 #define Mr vaddr_read
@@ -157,5 +158,9 @@ static int decode_exec(Decode *s) {
 
 int isa_exec_once(Decode *s) {
   s->isa.inst = inst_fetch(&s->snpc, 4);
+  //Log("%08x\n", s->isa.inst);
+  //ringbuf_push(&iringbuf, s->snpc, s->isa.inst);
+  //uint8_t *code = (uint8_t *)&s->isa.inst;
+  //ringbuf_push(&iringbuf, s->snpc, code, 4);
   return decode_exec(s);
 }

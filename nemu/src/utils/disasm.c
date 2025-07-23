@@ -69,3 +69,24 @@ void disassemble(char *str, int size, uint64_t pc, uint8_t *code, int nbyte) {
   }
   cs_free_dl(insn, count);
 }
+
+int disassemble_full(char *str, int str_size, char *rawbuf, int rawbuf_size, uint64_t pc, uint8_t *code, int nbyte) {
+  cs_insn *insn;
+  size_t count = cs_disasm_dl(handle, code, nbyte, pc, 0, &insn);
+  assert(count == 1);
+
+  int len = snprintf(str, str_size, "%s", insn->mnemonic);
+  if (insn->op_str[0] != '\0') {
+    len += snprintf(str + len, str_size - len, "\t%s", insn->op_str);
+  }
+
+  // Format raw bytes like: "01 21 28 23"
+  int raw_len = 0;
+  for (size_t i = 0; i < insn->size; i++) {
+    raw_len += snprintf(rawbuf + raw_len, rawbuf_size - raw_len, "%02x ", insn->bytes[i]);
+  }
+  if (raw_len > 0 && rawbuf[raw_len - 1] == ' ') rawbuf[--raw_len] = '\0'; // remove trailing space
+
+  cs_free_dl(insn, count);
+  return insn->size;
+}
