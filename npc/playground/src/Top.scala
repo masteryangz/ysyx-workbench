@@ -19,16 +19,19 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 
 
   // connect
-  io.instr          := instrfet.io.instr
-  decoder.io.instr  := instrfet.io.instr
-  decoder.io.wdata  := alu.io.wdata
-  decoder.io.wen    := alu.io.wen
-  alu.io.rdata1     := decoder.io.rdata1
-  alu.io.rdata2     := decoder.io.rdata2
-  alu.io.Op         := decoder.io.Op
-  alu.io.funct3     := decoder.io.funct3
-  alu.io.imm        := decoder.io.imm
-  dpiEnd.io.trap    := trapPulse
+  io.instr            := instrfet.io.instr
+  decoder.io.instr    := instrfet.io.instr
+  decoder.io.wdata    := alu.io.wdata
+  decoder.io.wen      := alu.io.wen
+  alu.io.rdata1       := decoder.io.rdata1
+  alu.io.rdata2       := decoder.io.rdata2
+  alu.io.Op           := decoder.io.Op
+  alu.io.funct3       := decoder.io.funct3
+  alu.io.imm          := decoder.io.imm
+  alu.io.pc           := instrfet.io.pc
+  instrfet.io.target  := alu.io.target
+  instrfet.io.is_jump := alu.io.is_jump
+  dpiEnd.io.trap      := trapPulse
 
   when (trapPulse) {
     printf(p"[NPC] trapPulse asserted! instr = 0x${Hexadecimal(instrfet.io.instr)}\n")

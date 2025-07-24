@@ -6,6 +6,8 @@ import chisel3.util._
 class IFIO extends Bundle {
     val pc      = Output(UInt(32.W))    // current PC
     val instr   = Output(UInt(32.W))    // fetched instruction
+    val target  = Input(UInt(32.W))     // target address for jump
+    val is_jump = Input(Bool())         // is jump instruction
 }
 
 class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
@@ -33,10 +35,13 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
 class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val wdata   = Output(UInt(DATA_WIDTH.W))
     val wen     = Output(Bool())
+    val is_jump = Output(Bool())
+    val target  = Output(UInt(32.W))
     val rdata1  = Input(UInt(DATA_WIDTH.W))
     val rdata2  = Input(UInt(DATA_WIDTH.W))
     //val rd_out  = Input(UInt(ADDR_WIDTH.W))
     val Op      = Input(UInt(7.W))
     val imm     = Input(UInt(DATA_WIDTH.W))
     val funct3  = Input(UInt(3.W))
+    val pc      = Input(UInt(32.W))
 }

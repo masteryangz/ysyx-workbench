@@ -13,7 +13,8 @@ class IF(memDepth: Int = 256, pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Modu
     pcReg := pcReg + pcInc.U
 
     // Output current PC
-    io.pc := pcReg
+    //io.pc := pcReg
+    io.pc := Mux(io.is_jump, io.target, pcReg)
 
     val instrMem = Mem(memDepth, UInt(DATA_WIDTH.W)) // memory
     //val instrMem = SyncReadMem(memDepth, UInt(DATA_WIDTH.W))

@@ -148,23 +148,24 @@ void ftrace_log(vaddr_t pc, vaddr_t target, bool is_call, bool is_ret) {
 }
 
 void ftrace_try_log(Decode *s) {
-  uint32_t inst = s->isa.inst;
+  vaddr_t inst = s->isa.inst;
   vaddr_t pc = s->pc;
   vaddr_t target = s->dnpc;
 
-  uint32_t opcode = inst & 0x7f;
-  uint32_t rd = (inst >> 7) & 0x1f;
-  uint32_t rs1 = (inst >> 15) & 0x1f;
-  uint32_t funct3 = (inst >> 12) & 0x7;
+  vaddr_t opcode = inst & 0x7f;
+  vaddr_t rd = (inst >> 7) & 0x1f;
+  vaddr_t rs1 = (inst >> 15) & 0x1f;
+  vaddr_t funct3 = (inst >> 12) & 0x7;
+  vaddr_t imm = (inst >> 20) & 0xfff;
   if (opcode == 0x6f && rd == 1) {
     // jal x1, imm —> direct function call
     ftrace_log(pc, target, true, false);
   }
-  else if (opcode == 0x67 && rs1 == 1 && rd == 0 && funct3 == 0) {
+  else if (opcode == 0x67 && rs1 == 1 && rd == 0 && funct3 == 0 && imm == 0) {
     // jalr x0, x1, 0 —> return
     ftrace_log(pc, target, false, true);
   }
-  else if (opcode == 0x67 && rd == 1) {
+  else if (opcode == 0x67 && rd == 1 && funct3 == 0) {
     // jalr x1, xN, imm —> indirect function call
     ftrace_log(pc, target, true, false);
   }
