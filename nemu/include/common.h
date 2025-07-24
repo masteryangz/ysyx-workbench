@@ -24,6 +24,10 @@
 #include <generated/autoconf.h>
 #include <macro.h>
 
+#ifdef CONFIG_FTRACE
+extern const char *elf_file;
+#endif
+
 #ifdef CONFIG_TARGET_AM
 #include <klib.h>
 #else

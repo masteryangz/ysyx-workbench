@@ -20,6 +20,7 @@
 #include <monitor/sdb/expr.h>
 #include <locale.h>
 #include <iringbuf.h>
+#include <ftrace.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -65,6 +66,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
+  IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
@@ -116,7 +118,7 @@ static void statistic() {
 void assert_fail_msg() {
   isa_reg_display();
   statistic();
-  print_ringbuf(&iringbuf);
+  IFDEF(CONFIG_ITRACE, print_ringbuf(&iringbuf));
 }
 
 /* Simulate how the CPU works. */
