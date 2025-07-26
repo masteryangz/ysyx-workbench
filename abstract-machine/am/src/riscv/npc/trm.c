@@ -15,6 +15,8 @@ void putch(char ch) {
 }
 
 void halt(int code) {
+  register int a0 asm("a0") = code;  // place exit code in a0
+  asm volatile("ebreak" : : "r"(a0)); // trigger trap with code in a0
   while (1);
 }
 

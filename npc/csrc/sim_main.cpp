@@ -45,7 +45,7 @@ int main() {
     top->clock = 1; step_and_dump_wave();
     sim_time++;
   }
-  printf("sim_main finished");
+  printf("sim_main finished with %s trap\n", top->io_goodTrap ? "good" : "bad");
   sim_exit();
   delete top;
   delete tfp;

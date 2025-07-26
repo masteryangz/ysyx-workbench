@@ -1,4 +1,5 @@
 BUILD_DIR = ./build
+IMAGE ?= rom.txt
 
 PRJ = playground
 
@@ -8,7 +9,10 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
+#	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR)
+#	$(info IMAGE = $(IMAGE))
 	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR)
+#	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR) --rom=$(IMAGE).bin
 
 help:
 	mill -i $(PRJ).runMain Elaborate --help

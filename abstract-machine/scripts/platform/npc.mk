@@ -26,6 +26,10 @@ image: image-dep
 	@$(OBJCOPY) -S --set-section-flags .bss=alloc,contents -O binary $(IMAGE).elf $(IMAGE).bin
 
 run: insert-arg
-	echo "TODO: add command here to run simulation"
+	@echo "[info] Running simulation with IMAGE = $(IMAGE)"
+	grep -oP '^\s*[0-9a-f]+:\s+\K[0-9a-f]{8}' $(IMAGE).txt > $(NPC_HOME)/rom.txt
+	$(MAKE) -C $(NPC_HOME) verilog
+	$(MAKE) -C $(NPC_HOME) sim
+	$(MAKE) -C $(NPC_HOME) wave
 
 .PHONY: insert-arg

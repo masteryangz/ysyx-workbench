@@ -10,22 +10,65 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
     val opFunct3 = Cat(io.Op, io.funct3)
 
     // default
-    io.wdata    := 0.U
-    io.wen      := false.B
-    io.is_jump  := false.B
-    io.target   := 0.U
+    io.wdata        := 0.U
+    io.wen          := false.B
+    io.is_jump      := false.B
+    io.target       := 0.U
+    //io.trapPulse    := io.In_trapPulse
 
     // case switch
-    switch(opFunct3) {
-        is("b0010011000".U) {
-            io.wdata    := io.rdata1 + io.imm
-            io.wen      := true.B
+    switch(io.Op) {
+        is("b0010011".U) {
+            switch(io.funct3) {
+                is("b000".U) { // ADDI
+                    io.wdata    := io.rdata1 + io.imm
+                    io.wen      := true.B
+                }
+                is("b010".U) { // SLTI
+                    io.wdata    := (io.rdata1.asSInt < io.imm.asSInt).asUInt
+                    io.wen      := true.B
+                }
+                is("b011".U) { // SLTIU
+                    io.wdata    := (io.rdata1 < io.imm).asUInt
+                    io.wen      := true.B
+                }
+                is("b100".U) { // XORI
+                    io.wdata    := io.rdata1 ^ io.imm
+                    io.wen      := true.B
+                }
+                is("b110".U) { // ORI
+                    io.wdata    := io.rdata1 | io.imm
+                    io.wen      := true.B
+                }
+                is("b111".U) { // ANDI
+                    io.wdata    := io.rdata1 & io.imm
+                    io.wen      := true.B
+                }
+            }
         }
-        is("b1100111000".U) {
+        is("b1100111".U) {
             io.wdata    := io.pc + pcInc.U
             io.wen      := true.B
             io.is_jump  := true.B
-            io.target   := (io.rdata1 + io.imm) & ~0x1.U
+            io.target   := (io.rdata1 + io.imm) & ~1.U(DATA_WIDTH.W)
+            //printf("io.target = 0x%x\n", io.target)
+            //printf("io.rdata1 + io.imm = 0x%x\n", io.rdata1 + io.imm)
+            //printf("~0x1.U = 0x%x\n", ~1.U(DATA_WIDTH.W))
+            //printf("(io.rdata1 + io.imm) & ~0x1.U = 0x%x\n", (io.rdata1 + io.imm) & ~1.U(DATA_WIDTH.W))
+        }
+        is("b0010111".U) {
+            io.wdata    := io.pc + io.imm
+            io.wen      := true.B
+        }
+        is("b0110111".U) {
+            io.wdata    := io.imm
+            io.wen      := true.B
+        }
+        is("b1101111".U) {
+            io.wdata    := io.pc + pcInc.U
+            io.wen      := true.B
+            io.is_jump  := true.B
+            io.target   := io.pc + io.imm
         }
     }
 

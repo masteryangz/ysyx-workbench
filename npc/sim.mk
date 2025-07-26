@@ -37,7 +37,9 @@ DESIGN = Top
 VERILATOR_FLAGS += --top-module $(DESIGN)
 # Input files for Verilator
 # VERILATOR_INPUT = csrc/sim_main.cpp vsrc/$(DESIGN).v 
-VERILATOR_INPUT = csrc/sim_main.cpp csrc/dpi.c vsrc/DPIEnd.v build/$(DESIGN).sv 
+# VERILATOR_INPUT = csrc/sim_main.cpp csrc/dpi.c vsrc/DPIEnd.v build/$(DESIGN).sv 
+VERILATOR_INPUT := $(shell find csrc -name "*.c") \
+                   vsrc/DPIEnd.v build/$(DESIGN).sv
 
 all:
 	@echo "Write this Makefile by your self."
