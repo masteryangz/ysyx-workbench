@@ -21,6 +21,7 @@ VERILATOR_FLAGS += -cc --exe
 VERILATOR_FLAGS += -x-assign fast
 # Warn abount lint issues; may not want this on less solid designs
 VERILATOR_FLAGS += -Wall
+VERILATOR_FLAGS += -CFLAGS "-I$(abspath include)"
 # Make waveforms
 VERILATOR_FLAGS += --trace
 VERILATOR_FLAGS += --trace-fst

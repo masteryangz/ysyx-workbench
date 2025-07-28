@@ -1,10 +1,8 @@
-#include "verilated.h"
-#include "verilated_fst_c.h"
-#include "../obj_dir/VTop.h"
+#include <sim_main.h>
 
 VerilatedContext* contextp = nullptr;
 VerilatedFstC* tfp = nullptr;
-static VTop* top;
+//VTop* top;
 
 void step_and_dump_wave() {
   top->eval();
@@ -28,23 +26,18 @@ void sim_exit() {
 
 int main() {
   sim_init();
-
-  const uint64_t max_cycles = 100000;
-  uint64_t sim_time = 0;
-
-  top->reset = 1;
-  for (int i = 0; i < 2; ++i) {
-    top->clock = 0; step_and_dump_wave();
-    top->clock = 1; step_and_dump_wave();
-  }
-  top->reset = 0;
-
+  init_sdb();
+  sdb_mainloop();
+  //const uint64_t max_cycles = 100000;
+  //uint64_t sim_time = 0;
+/*
   while (sim_time < max_cycles && !contextp->gotFinish()) {
     printf("Sim time: %lu\n", sim_time);
     top->clock = 0; step_and_dump_wave();
     top->clock = 1; step_and_dump_wave();
     sim_time++;
   }
+*/
   printf("sim_main finished with %s trap\n", top->io_goodTrap ? "good" : "bad");
   sim_exit();
   delete top;
