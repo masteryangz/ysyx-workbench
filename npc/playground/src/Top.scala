@@ -10,9 +10,10 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
   })
 
   // create new module
-  val instrfet  = Module(new IF(romFile = romFile))
+  val instrfet  = Module(new IF())
   val decoder   = Module(new Decoder())
   val alu       = Module(new ALU())
+  val memU      = Module(new MemU(memDepth = 256, DATA_WIDTH = DATA_WIDTH, romFile = romFile))
   val dpiEnd    = Module(new DPIEnd)
   val isEbreak  = instrfet.io.instr === "h00100073".U
   val trapReg   = RegNext(isEbreak, false.B)
@@ -20,9 +21,9 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
 
 
   // connect
-  io.instr                := instrfet.io.instr
+  io.instr                := memU.io.instr
   io.goodTrap             := decoder.io.goodTrap
-  decoder.io.instr        := instrfet.io.instr
+  decoder.io.instr        := memU.io.instr
   decoder.io.wdata        := alu.io.wdata
   decoder.io.wen          := alu.io.wen
   //decoder.io.In_trapPulse := instrfet.io.trapPulse

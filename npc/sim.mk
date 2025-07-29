@@ -22,6 +22,7 @@ VERILATOR_FLAGS += -x-assign fast
 # Warn abount lint issues; may not want this on less solid designs
 VERILATOR_FLAGS += -Wall
 VERILATOR_FLAGS += -CFLAGS "-I$(abspath include)"
+VERILATOR_FLAGS += --LDFLAGS "-lreadline -ldl"
 # Make waveforms
 VERILATOR_FLAGS += --trace
 VERILATOR_FLAGS += --trace-fst
@@ -40,7 +41,7 @@ VERILATOR_FLAGS += --top-module $(DESIGN)
 # VERILATOR_INPUT = csrc/sim_main.cpp vsrc/$(DESIGN).v 
 # VERILATOR_INPUT = csrc/sim_main.cpp csrc/dpi.c vsrc/DPIEnd.v build/$(DESIGN).sv 
 VERILATOR_INPUT := $(shell find csrc -name "*.c") \
-                   vsrc/DPIEnd.v build/$(DESIGN).sv
+                   csrc/sim_main.cpp vsrc/DPIEnd.v build/$(DESIGN).sv
 
 all:
 	@echo "Write this Makefile by your self."

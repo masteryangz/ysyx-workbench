@@ -11,7 +11,13 @@ class IFIO(memDepth: Int = 256, pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bu
     val is_jump     = Input(Bool())                 // is jump instruction
 }
 
+class MemUIO(memDepth: Int = 256, DATA_WIDTH: Int = 32) extends Bundle {
+    val pc          = Input(UInt(DATA_WIDTH.W))     // current PC
+    val instr       = Output(UInt(DATA_WIDTH.W))    // fetched instruction
+}
+
 class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
+    val pc          = Input(UInt(DATA_WIDTH.W))    // current PC
     val rs1         = Input(UInt(ADDR_WIDTH.W))
     val rs2         = Input(UInt(ADDR_WIDTH.W))
     val rd          = Input(UInt(ADDR_WIDTH.W))
@@ -23,6 +29,7 @@ class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
 }
 
 class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
+    val pc              = Input(UInt(DATA_WIDTH.W)) // current PC
     val instr           = Input(UInt(DATA_WIDTH.W))
     val wdata           = Input(UInt(DATA_WIDTH.W))
     val wen             = Input(Bool())
@@ -49,4 +56,10 @@ class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val funct3          = Input(UInt(3.W))
     val pc              = Input(UInt(DATA_WIDTH.W))
     //val In_trapPulse    = Input(Bool())
+}
+
+class adderIO(DATA_WIDTH: Int = 32) extends Bundle {
+    val add1   = Input(UInt(DATA_WIDTH.W))
+    val add2   = Input(UInt(DATA_WIDTH.W))
+    val result = Output(UInt(DATA_WIDTH.W))
 }

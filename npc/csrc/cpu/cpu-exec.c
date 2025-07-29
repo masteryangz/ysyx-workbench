@@ -20,6 +20,7 @@
 #include <sdb/expr.h>
 #include <locale.h>
 #include <sim_main.h>
+#include <isa.h>
 //#include <iringbuf.h>
 //#include <ftrace.h>
 
@@ -31,7 +32,7 @@
 #define MAX_INST_TO_PRINT 10
 //ringbuf_t iringbuf;
 
-//CPU_state cpu = {};
+CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;

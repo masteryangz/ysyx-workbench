@@ -4,6 +4,12 @@ VerilatedContext* contextp = nullptr;
 VerilatedFstC* tfp = nullptr;
 //VTop* top;
 
+void init_sdb();
+void sdb_mainloop();
+
+const uint64_t max_cycles = 100000;
+uint64_t sim_time = 0;
+
 void step_and_dump_wave() {
   top->eval();
   contextp->timeInc(1);

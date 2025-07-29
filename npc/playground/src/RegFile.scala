@@ -16,4 +16,8 @@ class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   io.rdata1 := rf(io.rs1)
   io.rdata2 := rf(io.rs2)
   io.goodTrap := rf(10) === 0.U
+
+  val bridge = Module(new regBridge(ADDR_WIDTH, DATA_WIDTH))
+  bridge.io.pc  := io.pc
+  bridge.io.gpr := rf
 }
