@@ -1,3 +1,6 @@
+#ifndef WATCHPOINT_H
+#define WATCHPOINT_H
+
 #define NR_WP 32
 
 typedef struct watchpoint {
@@ -16,3 +19,5 @@ void init_wp_pool();
 WP* new_wp(char *expr, word_t value);
 void free_wp(WP *wp);
 void set_value(WP *wp, word_t value);
+
+#endif

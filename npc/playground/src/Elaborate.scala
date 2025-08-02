@@ -1,4 +1,7 @@
 object Elaborate extends App {
+  // Disable Vec flattening to emit unpacked arrays for BlackBox IO
+  System.setProperty("chisel.enableMemVecFlatten", "false")
+  
   // Extract --rom=filename from args
   val romFile = args.find(_.startsWith("--rom=")).map(_.drop(6)).getOrElse("rom.txt")
 

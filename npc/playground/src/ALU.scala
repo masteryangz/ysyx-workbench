@@ -17,6 +17,8 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
     io.is_jump      := false.B
     io.target       := 0.U
     //io.trapPulse    := io.In_trapPulse
+    adder.io.add1 := 0.U
+    adder.io.add2 := 0.U
 
     // case switch
     switch(io.Op) {

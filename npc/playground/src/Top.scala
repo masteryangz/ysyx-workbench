@@ -5,8 +5,10 @@ import chisel3.util._
 
 class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt") extends Module {
   val io = IO(new Bundle {
-    val instr     = Output(UInt(DATA_WIDTH.W))  // expose instruction
-    val goodTrap  = Output(Bool()) // expose goodTrap signal
+    val dpi_mem_addr  = Input(UInt(ADDR_WIDTH.W))   // expose memory address
+    val dpi_mem_data  = Output(UInt(DATA_WIDTH.W))  // expose memory data
+    val instr         = Output(UInt(DATA_WIDTH.W))  // expose instruction
+    val goodTrap      = Output(Bool()) // expose goodTrap signal
   })
 
   // create new module
@@ -15,14 +17,20 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
   val alu       = Module(new ALU())
   val memU      = Module(new MemU(memDepth = 256, DATA_WIDTH = DATA_WIDTH, romFile = romFile))
   val dpiEnd    = Module(new DPIEnd)
-  val isEbreak  = instrfet.io.instr === "h00100073".U
+  val isEbreak  = memU.io.instr === "h00100073".U
   val trapReg   = RegNext(isEbreak, false.B)
   val trapPulse = isEbreak && !trapReg // 只在 isEbreak 从 0 变成 1 的时钟沿为 true
-
+  val memReader = Module(new MemReadBridge(DATA_WIDTH))
 
   // connect
+  io.dpi_mem_data         := memU.io.dpi_mem_data
+  //io.dpi_mem_addr         := memReader.io.addr
+  memU.io.dpi_mem_addr    := memReader.io.addr
+  memReader.io.data       := memU.io.dpi_mem_data
   io.instr                := memU.io.instr
   io.goodTrap             := decoder.io.goodTrap
+  memU.io.pc              := instrfet.io.pc
+  decoder.io.pc           := instrfet.io.pc
   decoder.io.instr        := memU.io.instr
   decoder.io.wdata        := alu.io.wdata
   decoder.io.wen          := alu.io.wen
@@ -48,5 +56,6 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
   dontTouch(decoder.io)
   dontTouch(alu.io)
   dontTouch(dpiEnd.io.trap)
-
+  dontTouch(memU.io)
+  dontTouch(memReader.io)
 }

@@ -40,8 +40,9 @@ VERILATOR_FLAGS += --top-module $(DESIGN)
 # Input files for Verilator
 # VERILATOR_INPUT = csrc/sim_main.cpp vsrc/$(DESIGN).v 
 # VERILATOR_INPUT = csrc/sim_main.cpp csrc/dpi.c vsrc/DPIEnd.v build/$(DESIGN).sv 
-VERILATOR_INPUT := $(shell find csrc -name "*.c") \
-                   csrc/sim_main.cpp vsrc/DPIEnd.v build/$(DESIGN).sv
+VERILATOR_INPUT := 	$(shell find csrc -name "*.c") \
+					$(shell find vsrc -name "*.sv") \
+                   	csrc/sim_main.cpp build/$(DESIGN).sv
 
 all:
 	@echo "Write this Makefile by your self."
@@ -64,7 +65,8 @@ sim:
 
 	@echo
 	@echo "-- RUN ---------------------"
-	obj_dir/V$(DESIGN) +trace
+#	obj_dir/V$(DESIGN) +trace
+	obj_dir/V$(DESIGN)
 
 #	@echo
 #	@echo "-- COVERAGE ----------------"

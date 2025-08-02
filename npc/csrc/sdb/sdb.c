@@ -216,7 +216,7 @@ static int cmd_x(char *args) {
       printf("Expression evaluation failed at address 0x%s\n", ex_token + i * 4);
       return 0;
     }
-    word_t data = vaddr_read(result + i * 4, 4);
+    word_t data = vaddr_read(result + i * 4);
     printf("%s + %d word_t: %08x\n", ex_token, i, data);
   }
 
@@ -294,12 +294,15 @@ void init_sdb() {
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
-
+  //Log("Watchpoint pool initialized.\n");
   /* Initialize npc */
   top->reset = 1;
+  Log("Resetting the simulation...\n");
   for (int i = 0; i < 2; ++i) {
     top->clock = 0; step_and_dump_wave();
     top->clock = 1; step_and_dump_wave();
   }
   top->reset = 0;
+  top->io_dpi_mem_addr = 0x0; 
+
 }

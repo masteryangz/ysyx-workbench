@@ -5,15 +5,17 @@ import chisel3.util._
 
 class IFIO(memDepth: Int = 256, pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bundle {
     val pc          = Output(UInt(DATA_WIDTH.W))    // current PC
-    val instr       = Output(UInt(DATA_WIDTH.W))    // fetched instruction
+    //val instr       = Output(UInt(DATA_WIDTH.W))    // fetched instruction
     //val trapPulse   = Output(Bool())                // trap pulse for ebreak instruction
     val target      = Input(UInt(DATA_WIDTH.W))     // target address for jump
     val is_jump     = Input(Bool())                 // is jump instruction
 }
 
 class MemUIO(memDepth: Int = 256, DATA_WIDTH: Int = 32) extends Bundle {
-    val pc          = Input(UInt(DATA_WIDTH.W))     // current PC
-    val instr       = Output(UInt(DATA_WIDTH.W))    // fetched instruction
+    val dpi_mem_addr    = Input(UInt(DATA_WIDTH.W))     // expose memory address
+    val dpi_mem_data    = Output(UInt(DATA_WIDTH.W))    // expose memory data
+    val pc              = Input(UInt(DATA_WIDTH.W))     // current PC
+    val instr           = Output(UInt(DATA_WIDTH.W))    // fetched instruction
 }
 
 class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {

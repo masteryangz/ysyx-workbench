@@ -18,10 +18,11 @@
 
 #include <common.h>
 
-extern uint32_t *instr_mem_ptr;
+//import "DPI-C" function void set_mem_read_addr(input int addr);
+//import "DPI-C" function int get_mem_read_data();
 
 //word_t vaddr_ifetch(vaddr_t addr, int len);
-word_t vaddr_read(vaddr_t addr, int len);
+word_t vaddr_read(vaddr_t addr);
 //void vaddr_write(vaddr_t addr, int len, word_t data);
 
 #define PAGE_SHIFT        12

@@ -1,3 +1,6 @@
+#ifndef IRINGBUF_H
+#define IRINGBUF_H
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -21,3 +24,5 @@ void ringbuf_init(ringbuf_t *rb);
 void ringbuf_push(ringbuf_t *rb, uint32_t pc, uint8_t *code, int nbyte);
 
 void print_ringbuf();
+
+#endif

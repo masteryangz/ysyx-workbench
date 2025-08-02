@@ -564,7 +564,7 @@ word_t eval(int p, int q, bool *eval_success) {
         //Log("Checking logical AND: %" PRIu32 " && %" PRIu32, val1, val2);
         return val1 && val2;
       case TK_DEREF: 
-        return vaddr_read(val2, 4); // Dereference the address in val2
+        return vaddr_read(val2); // Dereference the address in val2
       default: assert(0);
     }
   }
