@@ -31,6 +31,7 @@
  */
 #define MAX_INST_TO_PRINT 10
 //ringbuf_t iringbuf;
+#define CONFIG_WATCHPOINT y
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -38,8 +39,9 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
-/*
-static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+
+//static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+static void trace_and_difftest() {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
@@ -56,14 +58,15 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     if (value != wp->value) {
       nemu_state.state = NEMU_STOP;
       printf("pc = %08x: Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
-          _this->pc, wp->NO, wp->expr, wp->value, value);
+      //    _this->pc, wp->NO, wp->expr, wp->value, value);
+            top->io_pc, wp->NO, wp->expr, wp->value, value);
       set_value(wp, value);
       return;
     }
   }
 #endif
 }
-*/
+
 static void exec_once() {
   //s->pc = pc;
   //s->snpc = pc;
@@ -107,6 +110,7 @@ static void execute(uint64_t n) {
     sim_time++;
     g_nr_guest_inst ++;
     //trace_and_difftest(&s, cpu.pc);
+    trace_and_difftest();
     if (nemu_state.state != NEMU_RUNNING) break;
     //IFDEF(CONFIG_DEVICE, device_update());
   }

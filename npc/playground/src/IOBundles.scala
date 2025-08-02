@@ -28,6 +28,7 @@ class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val rdata1      = Output(UInt(DATA_WIDTH.W))
     val rdata2      = Output(UInt(DATA_WIDTH.W))
     val goodTrap    = Output(Bool()) 
+    val rf_out      = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // output the entire register file
 }
 
 class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
@@ -43,6 +44,7 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val funct3          = Output(UInt(3.W))
     val goodTrap        = Output(Bool()) 
     //val trapPulse       = Output(Bool())
+    val rf_out          = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // output the entire register file
 }
 
 class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {

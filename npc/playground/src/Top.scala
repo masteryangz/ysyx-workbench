@@ -7,7 +7,9 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
   val io = IO(new Bundle {
     val dpi_mem_addr  = Input(UInt(ADDR_WIDTH.W))   // expose memory address
     val dpi_mem_data  = Output(UInt(DATA_WIDTH.W))  // expose memory data
-    val instr         = Output(UInt(DATA_WIDTH.W))  // expose instruction
+    //val instr         = Output(UInt(DATA_WIDTH.W))  // expose instruction
+    val pc            = Output(UInt((1<<ADDR_WIDTH).W))
+    val rf_out        = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // expose the entire register file
     val goodTrap      = Output(Bool()) // expose goodTrap signal
   })
 
@@ -21,13 +23,17 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
   val trapReg   = RegNext(isEbreak, false.B)
   val trapPulse = isEbreak && !trapReg // 只在 isEbreak 从 0 变成 1 的时钟沿为 true
   val memReader = Module(new MemReadBridge(DATA_WIDTH))
+  //val regBridge = Module(new regBridge(ADDR_WIDTH, DATA_WIDTH))
 
   // connect
   io.dpi_mem_data         := memU.io.dpi_mem_data
   //io.dpi_mem_addr         := memReader.io.addr
   memU.io.dpi_mem_addr    := memReader.io.addr
-  memReader.io.data       := memU.io.dpi_mem_data
-  io.instr                := memU.io.instr
+  //memReader.io.data       := memU.io.dpi_mem_data
+  io.rf_out               := decoder.io.rf_out
+  //regBridge.io.gpr        := decoder.io.rf_out
+  //io.instr                := memU.io.instr
+  io.pc                   := instrfet.io.pc
   io.goodTrap             := decoder.io.goodTrap
   memU.io.pc              := instrfet.io.pc
   decoder.io.pc           := instrfet.io.pc
@@ -57,5 +63,5 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32, romFile: String = "rom.txt"
   dontTouch(alu.io)
   dontTouch(dpiEnd.io.trap)
   dontTouch(memU.io)
-  dontTouch(memReader.io)
+  //dontTouch(memReader.io)
 }

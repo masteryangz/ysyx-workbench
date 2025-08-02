@@ -418,6 +418,7 @@ word_t eval(int p, int q, bool *eval_success) {
       *eval_success = true;
       bool success = false;
       word_t value = isa_reg_str2val(tokens[p].str+1, &success);
+      //Log("value = %" PRIu32 ", success = %d", value, success);
       if (!success) {
         //Log("Invalid register name at p = %d: %s", p, tokens[p].str);
         *eval_success = false; // Invalid register name

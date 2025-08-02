@@ -297,7 +297,7 @@ void init_sdb() {
   //Log("Watchpoint pool initialized.\n");
   /* Initialize npc */
   top->reset = 1;
-  Log("Resetting the simulation...\n");
+  //Log("Resetting the simulation...\n");
   for (int i = 0; i < 2; ++i) {
     top->clock = 0; step_and_dump_wave();
     top->clock = 1; step_and_dump_wave();

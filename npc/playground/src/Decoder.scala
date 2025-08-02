@@ -30,6 +30,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.funct3       := io.instr(14, 12)
     io.imm          := 0.U
     io.goodTrap     := regfile.io.goodTrap
+    io.rf_out       := regfile.io.rf_out
     switch(io.Op) {
         is("b0010011".U) {
             io.imm := io.instr(DATA_WIDTH-1, 20).asSInt.pad(DATA_WIDTH).asUInt
