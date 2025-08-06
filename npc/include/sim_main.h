@@ -4,7 +4,13 @@
 #include "verilated.h"
 #include "verilated_fst_c.h"
 #include "../obj_dir/VTop.h"
+#include "verilated_dpi.h"
+#include "../obj_dir/VTop__Dpi.h"
+#include <svdpi.h>
+//#include "vcsuser.h"
 #include <sdb/sdb.h>
+#include <isa.h>
+#include <memory/vaddr.h>
 
 extern VerilatedContext* contextp;
 extern VerilatedFstC* tfp;
@@ -13,6 +19,7 @@ extern const uint64_t max_cycles;
 extern uint64_t sim_time;
 extern vaddr_t mem_read_addr;
 extern word_t mem_read_data;
+/*
 extern word_t gpr_x0;
 extern word_t gpr_x1;
 extern word_t gpr_x2;
@@ -46,9 +53,10 @@ extern word_t gpr_x29;
 extern word_t gpr_x30;
 extern word_t gpr_x31;
 extern word_t pc_ptr;
-
+*/
 void step_and_dump_wave();
 void sim_init();
 void sim_exit();
+//void eval_once();
 
 #endif

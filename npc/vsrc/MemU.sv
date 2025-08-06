@@ -1,0 +1,21 @@
+module MemU #(
+    parameter ADDR_WIDTH = 5,
+    parameter DATA_WIDTH = 32
+) (
+    input  clock,                   // clock signal
+    input  reset,                   // reset signal
+    input  [DATA_WIDTH-1:0] pc,     // program counter
+    output reg [DATA_WIDTH-1:0] instr   // fetched instruction
+);
+
+    import "DPI-C" context function int pmem_read(input int addr);
+
+    // Memory read operation
+    always @(posedge clock) begin
+        if (reset) begin
+            instr <= '0; // Reset instruction to 0
+        end else begin
+            instr <= pmem_read(pc); // Convert byte address to word address
+        end
+    end
+endmodule

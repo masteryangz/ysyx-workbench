@@ -1,7 +1,7 @@
 module DPIEnd (
   input wire trap
 );
-  import "DPI-C" function void sim_end();
+  import "DPI-C" context function void sim_end();
   reg called;
 
   initial called = 0;

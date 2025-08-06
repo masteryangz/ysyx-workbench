@@ -11,10 +11,12 @@ class IFIO(memDepth: Int = 256, pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bu
     val is_jump     = Input(Bool())                 // is jump instruction
 }
 
-class MemUIO(memDepth: Int = 256, DATA_WIDTH: Int = 32) extends Bundle {
-    val dpi_mem_addr    = Input(UInt(DATA_WIDTH.W))     // expose memory address
-    val dpi_mem_data    = Output(UInt(DATA_WIDTH.W))    // expose memory data
+class MemUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val pc              = Input(UInt(DATA_WIDTH.W))     // current PC
+    //val addr            = Input(UInt((1 << ADDR_WIDTH).W))  // memory address
+    //val wdata           = Input(UInt(DATA_WIDTH.W))    // data to write
+    //val wen             = Input(Bool())                // write enable
+    //val rdata           = Output(UInt(DATA_WIDTH.W))   // data read from memory
     val instr           = Output(UInt(DATA_WIDTH.W))    // fetched instruction
 }
 
@@ -28,7 +30,7 @@ class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val rdata1      = Output(UInt(DATA_WIDTH.W))
     val rdata2      = Output(UInt(DATA_WIDTH.W))
     val goodTrap    = Output(Bool()) 
-    val rf_out      = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // output the entire register file
+    //val rf_out      = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // output the entire register file
 }
 
 class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
@@ -44,7 +46,7 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val funct3          = Output(UInt(3.W))
     val goodTrap        = Output(Bool()) 
     //val trapPulse       = Output(Bool())
-    val rf_out          = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // output the entire register file
+    //val rf_out          = Output(Vec(1 << ADDR_WIDTH, UInt(DATA_WIDTH.W))) // output the entire register file
 }
 
 class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {

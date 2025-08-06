@@ -18,6 +18,17 @@
 
 #include <common.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int get_gpr(int idx);  // returns the register value
+int get_pc();        // returns the program counter value
+
+#ifdef __cplusplus
+}
+#endif
+
 static inline int check_reg_idx(int idx) {
   //Log("idx = %d", idx);
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < MUXDEF(CONFIG_RVE, 16, 32)));

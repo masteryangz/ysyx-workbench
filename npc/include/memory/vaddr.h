@@ -18,11 +18,21 @@
 
 #include <common.h>
 
-//import "DPI-C" function void set_mem_read_addr(input int addr);
-//import "DPI-C" function int get_mem_read_data();
+#define MEM_SIZE 1 << 16 // 2^31 bytes = 2 GiB
 
+extern word_t mem[MEM_SIZE];
+void init_mem_from_file(const char *filename);
+void print_mem(vaddr_t start, vaddr_t end);
+#ifdef __cplusplus
+extern "C" {
+#endif
+int pmem_read(int raddr);
+void pmem_write(int waddr, int wdata, char wmask);
+#ifdef __cplusplus
+}
+#endif
 //word_t vaddr_ifetch(vaddr_t addr, int len);
-word_t vaddr_read(vaddr_t addr);
+//word_t vaddr_read(vaddr_t addr);
 //void vaddr_write(vaddr_t addr, int len, word_t data);
 
 #define PAGE_SHIFT        12

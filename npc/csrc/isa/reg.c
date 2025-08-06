@@ -15,6 +15,7 @@
 
 #include <isa.h>
 #include <reg/reg.h>
+#include <sim_main.h>
 
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
@@ -31,20 +32,30 @@ void isa_reg_display() {
       printf("Error: Register %s not found\n", regs[i]);
       continue; // Skip to the next register if the current one is not found
     }
-    printf("%s: 0x%08x\n", regs[i], value);
+    printf("%s: 0x%08x ", regs[i], value);
+    if (i % 4 == 3) {
+      printf("\n"); // Print a newline after every 4 registers
+    }
   }
 }
 
 word_t isa_reg_str2val(const char *s, bool *success) {
-  //Log("size of regs: %zu", sizeof(regs) / sizeof(regs[0]));
+  /*
+  svScope scope = svGetScope();
+  if (!scope) {
+    printf("%%Warning: svGetScope failed\n");
+    exit(1);
+  }*/
   if (strcmp(s, "pc") == 0) {
     *success = true;
-    return cpu.pc; // Return the program counter value
+    return get_pc();
+    //return cpu.pc; // Return the program counter value
   }
   for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); i++) {
     if (strcmp(s, regs[i]) == 0) {
       *success = true;
-      return cpu.gpr[i];
+      return get_gpr(i);
+      //return cpu.gpr[i];
     }
   }
   *success = false;

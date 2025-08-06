@@ -31,7 +31,10 @@ void isa_reg_display() {
       printf("Error: Register %s not found\n", regs[i]);
       continue; // Skip to the next register if the current one is not found
     }
-    printf("%s: 0x%08x\n", regs[i], value);
+    printf("%s: 0x%08x ", regs[i], value);
+    if (i % 4 == 3) {
+      printf("\n"); // Print a newline after every 4 registers
+    }
   }
 }
 

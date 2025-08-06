@@ -216,7 +216,8 @@ static int cmd_x(char *args) {
       printf("Expression evaluation failed at address 0x%s\n", ex_token + i * 4);
       return 0;
     }
-    word_t data = vaddr_read(result + i * 4);
+    //word_t data = vaddr_read(result + i * 4);
+    word_t data = pmem_read(result + i * 4); // Read memory at the calculated address
     printf("%s + %d word_t: %08x\n", ex_token, i, data);
   }
 
@@ -303,6 +304,5 @@ void init_sdb() {
     top->clock = 1; step_and_dump_wave();
   }
   top->reset = 0;
-  top->io_dpi_mem_addr = 0x0; 
-
+  //Log("Simulation reset complete.\n");
 }
