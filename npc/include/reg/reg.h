@@ -17,17 +17,12 @@
 #define __RISCV_REG_H__
 
 #include <common.h>
+#include "../obj_dir/VTop___024root.h"
+//#include "verilated.h"
+//#include "verilated_dpi.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-int get_gpr(int idx);  // returns the register value
-int get_pc();        // returns the program counter value
-
-#ifdef __cplusplus
-}
-#endif
+extern "C" word_t get_gpr(int idx);  // returns the register value
+extern "C" word_t get_pc();        // returns the program counter value
 
 static inline int check_reg_idx(int idx) {
   //Log("idx = %d", idx);

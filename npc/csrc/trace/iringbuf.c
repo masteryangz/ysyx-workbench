@@ -1,4 +1,4 @@
-#include <iringbuf.h>
+#include <trace/iringbuf.h>
 //#include "utils/disasm.c"
 int disassemble_full(char *str, int str_size, char *rawbuf, int rawbuf_size, uint64_t pc, uint8_t *code, int nbyte);
 void ringbuf_init(ringbuf_t *rb) {

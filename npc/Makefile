@@ -39,4 +39,5 @@ clean::
 #	@echo "Write this Makefile by yourself."
 
 include sim.mk
+include scripts/config.mk
 -include ../Makefile

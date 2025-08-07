@@ -7,10 +7,10 @@
 #include "verilated_dpi.h"
 #include "../obj_dir/VTop__Dpi.h"
 #include <svdpi.h>
-//#include "vcsuser.h"
 #include <sdb/sdb.h>
 #include <isa.h>
 #include <memory/vaddr.h>
+#include <trace/iringbuf.h>
 
 extern VerilatedContext* contextp;
 extern VerilatedFstC* tfp;

@@ -16,7 +16,7 @@
 #include <isa.h>
 #include <reg/reg.h>
 #include <sim_main.h>
-
+#define GET_RF_CASE(i) case i: return top->rootp->Top__DOT__decoder__DOT__regfile__DOT__rf_##i;
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -54,10 +54,59 @@ word_t isa_reg_str2val(const char *s, bool *success) {
   for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); i++) {
     if (strcmp(s, regs[i]) == 0) {
       *success = true;
+      //Log("Getting reg %s", s);
       return get_gpr(i);
       //return cpu.gpr[i];
     }
   }
   *success = false;
   return 0; // Return 0 if the register name is not found
+}
+
+word_t get_pc() {
+  return top->rootp->Top__DOT__instrfet__DOT__pcReg;
+}
+
+word_t get_gpr(int idx) {
+  if (idx < 0 || idx >= 32) {
+    printf("Error: Invalid register index %d\n", idx);
+    return 0; // Return 0 for invalid index
+  }
+  switch(idx) {
+    GET_RF_CASE(0)
+    GET_RF_CASE(1)
+    GET_RF_CASE(2)
+    GET_RF_CASE(3)
+    GET_RF_CASE(4)
+    GET_RF_CASE(5)
+    GET_RF_CASE(6)
+    GET_RF_CASE(7)
+    GET_RF_CASE(8)
+    GET_RF_CASE(9)
+    GET_RF_CASE(10)
+    GET_RF_CASE(11)
+    GET_RF_CASE(12)
+    GET_RF_CASE(13)
+    GET_RF_CASE(14)
+    GET_RF_CASE(15)
+    GET_RF_CASE(16)
+    GET_RF_CASE(17)
+    GET_RF_CASE(18)
+    GET_RF_CASE(19)
+    GET_RF_CASE(20)
+    GET_RF_CASE(21)
+    GET_RF_CASE(22)
+    GET_RF_CASE(23)
+    GET_RF_CASE(24)
+    GET_RF_CASE(25)
+    GET_RF_CASE(26)
+    GET_RF_CASE(27)
+    GET_RF_CASE(28)
+    GET_RF_CASE(29)
+    GET_RF_CASE(30)
+    GET_RF_CASE(31)
+    default:
+      printf("Error: Invalid register index %d\n", idx);
+      return 0; // Return 0 for invalid index
+  }
 }

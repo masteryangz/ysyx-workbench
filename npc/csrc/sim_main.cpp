@@ -31,13 +31,7 @@ void sim_init() {
   contextp->traceEverOn(true);
   top->trace(tfp, 99);  // 99 is standard depth
   tfp->open("dump.fst");
-  long long int time = get_sv_time();
-  svScope scope_regfile = nullptr;
-  scope_regfile = svGetScopeFromName("TOP.decoder.regfile");
-  if (!scope_regfile) {
-    fprintf(stderr, "ERROR: Failed to get regfile DPI scope\n");
-    exit(1);
-  }
+  ringbuf_init(&iringbuf);
 }
 
 void sim_exit() {

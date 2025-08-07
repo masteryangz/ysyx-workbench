@@ -21,7 +21,8 @@
 #include <locale.h>
 #include <sim_main.h>
 #include <isa.h>
-//#include <iringbuf.h>
+#include <reg/reg.h>
+#include <trace/iringbuf.h>
 //#include <ftrace.h>
 
 /* The assembly code of instructions executed is only output to the screen
@@ -30,8 +31,8 @@
  * You can modify this value as you want.
  */
 #define MAX_INST_TO_PRINT 10
-//ringbuf_t iringbuf;
-#define CONFIG_WATCHPOINT y
+ringbuf_t iringbuf;
+//#define CONFIG_WATCHPOINT y
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -59,7 +60,7 @@ static void trace_and_difftest() {
       nemu_state.state = NEMU_STOP;
       printf("pc = %08x: Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
       //    _this->pc, wp->NO, wp->expr, wp->value, value);
-            top->io_pc, wp->NO, wp->expr, wp->value, value);
+            get_pc(), wp->NO, wp->expr, wp->value, value);
       set_value(wp, value);
       return;
     }
@@ -142,7 +143,6 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
-  //ringbuf_init(&iringbuf);
 
   execute(n);
 

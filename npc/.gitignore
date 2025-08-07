@@ -13,6 +13,9 @@
 !.gitignore
 !.scalafmt.conf
 !README.md
+!Kconfig
+include/config
+include/generated
 build/
 obj_dir/
 

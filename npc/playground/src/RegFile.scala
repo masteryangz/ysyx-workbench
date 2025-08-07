@@ -5,12 +5,9 @@ import chisel3.util._
 import chisel3.experimental.IntParam
 
 
-class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends BlackBox(Map(
-    "ADDR_WIDTH" -> IntParam(ADDR_WIDTH),
-    "DATA_WIDTH" -> IntParam(DATA_WIDTH)
-  )) {
+class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   val io = IO(new RegFileIO())
-/*
+
   val rf = RegInit(VecInit(Seq.fill(1 << ADDR_WIDTH)(0.U(DATA_WIDTH.W))))
   rf(0) := 0.U  // x0 is always zero
 
@@ -22,5 +19,5 @@ class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends BlackBox(Map(
   io.rdata2 := rf(io.rs2)
   io.goodTrap := rf(10) === 0.U
   //io.rf_out := rf // expose the entire register file
-*/
+
 }
