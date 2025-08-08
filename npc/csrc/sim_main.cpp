@@ -14,7 +14,7 @@ void sdb_mainloop();
 const uint64_t max_cycles = 100000;
 uint64_t sim_time = 0;
 
-extern long long int get_sv_time();
+//extern long long int get_sv_time();
 
 void step_and_dump_wave() {  
   //Log("Sim time: %lu", sim_time);

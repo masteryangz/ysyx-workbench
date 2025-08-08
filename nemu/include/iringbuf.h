@@ -23,6 +23,6 @@ void ringbuf_init(ringbuf_t *rb);
 // Push one byte
 void ringbuf_push(ringbuf_t *rb, uint32_t pc, uint8_t *code, int nbyte);
 
-void print_ringbuf();
+void print_ringbuf(ringbuf_t *rb);
 
 #endif

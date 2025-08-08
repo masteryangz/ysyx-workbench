@@ -21,8 +21,11 @@ VERILATOR_FLAGS += -cc --exe
 VERILATOR_FLAGS += -x-assign fast
 # Warn abount lint issues; may not want this on less solid designs
 VERILATOR_FLAGS += -Wall
-VERILATOR_FLAGS += -CFLAGS "-I$(abspath include)"
-VERILATOR_FLAGS += --LDFLAGS "-lreadline -ldl"
+CFLAGS += -I$(abspath include)
+VERILATOR_FLAGS += -CFLAGS "$(CFLAGS)"
+$(info VERILATOR_FLAGS = $(VERILATOR_FLAGS))
+LDFLAGS += $(LIBS)
+VERILATOR_FLAGS += --LDFLAGS "$(LDFLAGS)"
 # Make waveforms
 VERILATOR_FLAGS += --trace
 VERILATOR_FLAGS += --trace-fst
@@ -37,12 +40,12 @@ VERILATOR_FLAGS += --Wno-fatal
 #VERILATOR_FLAGS += --gdbbt
 DESIGN = Top
 VERILATOR_FLAGS += --top-module $(DESIGN)
-# Input files for Verilator
-# VERILATOR_INPUT = csrc/sim_main.cpp vsrc/$(DESIGN).v 
-# VERILATOR_INPUT = csrc/sim_main.cpp csrc/dpi.c vsrc/DPIEnd.v build/$(DESIGN).sv 
-VERILATOR_INPUT := 	$(shell find csrc -name "*.c") \
+VERILATOR_INPUT := 	$(SRCS) \
 					$(shell find vsrc -name "*.sv") \
-                   	csrc/sim_main.cpp build/$(DESIGN).sv
+                   	build/$(DESIGN).sv
+#VERILATOR_INPUT := 	$(shell find csrc -name "*.c") \
+#					$(shell find vsrc -name "*.sv") \
+#                  	csrc/sim_main.cpp build/$(DESIGN).sv
 
 all:
 	@echo "Write this Makefile by your self."

@@ -13,17 +13,19 @@
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
 
-ifeq ($(CONFIG_ITRACE)$(CONFIG_IQUEUE),)
-#$(info CONFIG_ITRACE = $(CONFIG_ITRACE))
-SRCS-BLACKLIST-y += csrc/utils/disasm.c
-else
-#$(info "Building capstone...")
-LIBCAPSTONE = tools/capstone/repo/libcapstone.so.5
-#CFLAGS += -I tools/capstone/repo/include
-CFLAGS += -I$(abspath tools/capstone/repo/include)
-#$(info LIBCAPSTONE = $(LIBCAPSTONE))
-csrc/utils/disasm.c: $(LIBCAPSTONE)
-$(LIBCAPSTONE):
-#	$(info "Building capstone...")
-	$(MAKE) -C tools/capstone
+SRCS-y += csrc/sim_main.cpp
+SRCS-y += csrc/dpi.c
+DIRS-y += csrc/cpu csrc/isa csrc/memory csrc/sdb csrc/trace csrc/utils
+DIRS-$(CONFIG_MODE_SYSTEM) += csrc/memory
+DIRS-BLACKLIST-$(CONFIG_TARGET_AM) += csrc/sdb
+#$(info in filelist CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))
+#$(info DIRS-BLACKLIST-y = $(DIRS-BLACKLIST-y))
+
+SHARE = $(if $(CONFIG_TARGET_SHARE),1,0)
+LIBS += $(if $(CONFIG_TARGET_NATIVE_ELF),-lreadline -ldl -pie,)
+
+ifdef mainargs
+ASFLAGS += -DBIN_PATH=\"$(mainargs)\"
 endif
+#SRCS-$(CONFIG_TARGET_AM) += src/am-bin.S
+#.PHONY: src/am-bin.S
