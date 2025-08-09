@@ -38,7 +38,6 @@ void sim_exit() {
   tfp->close();
 }
 
-#define __GUEST_ISA__ riscv32
 static void welcome() {
   Log("Trace: %s", MUXDEF(CONFIG_TRACE, ANSI_FMT("ON", ANSI_FG_GREEN), ANSI_FMT("OFF", ANSI_FG_RED)));
   IFDEF(CONFIG_TRACE, Log("If trace is enabled, a log file will be generated "

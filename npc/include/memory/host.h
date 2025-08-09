@@ -13,31 +13,30 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __MEMORY_VADDR_H__
-#define __MEMORY_VADDR_H__
+#ifndef __MEMORY_HOST_H__
+#define __MEMORY_HOST_H__
 
 #include <common.h>
 
-#define MEM_SIZE 1 << 16 // 2^31 bytes = 2 GiB
-
-extern word_t mem[MEM_SIZE];
-void init_mem_from_file(const char *filename);
-void print_mem(vaddr_t start, vaddr_t end);
-int vaddr_ifetch(vaddr_t addr);
-#ifdef __cplusplus
-extern "C" {
-#endif
-int pmem_read(int raddr);
-void pmem_write(int waddr, int wdata, char wmask);
-#ifdef __cplusplus
+static inline word_t host_read(void *addr, int len) {
+  //Log("len = %d", len);
+  switch (len) {
+    case 1: return *(uint8_t  *)addr;
+    case 2: return *(uint16_t *)addr;
+    case 4: return *(uint32_t *)addr;
+    IFDEF(CONFIG_ISA64, case 8: return *(uint64_t *)addr);
+    default: MUXDEF(CONFIG_RT_CHECK, assert(0), return 0);
+  }
 }
-#endif
-//word_t vaddr_ifetch(vaddr_t addr, int len);
-//word_t vaddr_read(vaddr_t addr);
-//void vaddr_write(vaddr_t addr, int len, word_t data);
 
-#define PAGE_SHIFT        12
-#define PAGE_SIZE         (1ul << PAGE_SHIFT)
-#define PAGE_MASK         (PAGE_SIZE - 1)
+static inline void host_write(void *addr, int len, word_t data) {
+  switch (len) {
+    case 1: *(uint8_t  *)addr = data; return;
+    case 2: *(uint16_t *)addr = data; return;
+    case 4: *(uint32_t *)addr = data; return;
+    IFDEF(CONFIG_ISA64, case 8: *(uint64_t *)addr = data; return);
+    IFDEF(CONFIG_RT_CHECK, default: assert(0));
+  }
+}
 
 #endif

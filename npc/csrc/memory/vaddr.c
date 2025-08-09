@@ -69,3 +69,9 @@ void pmem_write(int waddr, int wdata, char wmask) {
     }
   }
 }
+
+int vaddr_ifetch(vaddr_t addr) {
+  // Fetch instruction from virtual address `addr` with length `len`
+  // This function is used to read instructions from memory
+  return pmem_read(addr);
+}

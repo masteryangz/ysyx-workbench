@@ -13,31 +13,25 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __MEMORY_VADDR_H__
-#define __MEMORY_VADDR_H__
+#ifndef __MEMORY_PADDR_H__
+#define __MEMORY_PADDR_H__
 
 #include <common.h>
 
-#define MEM_SIZE 1 << 16 // 2^31 bytes = 2 GiB
+#define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
+#define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
+#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
 
-extern word_t mem[MEM_SIZE];
-void init_mem_from_file(const char *filename);
-void print_mem(vaddr_t start, vaddr_t end);
-int vaddr_ifetch(vaddr_t addr);
-#ifdef __cplusplus
-extern "C" {
-#endif
-int pmem_read(int raddr);
-void pmem_write(int waddr, int wdata, char wmask);
-#ifdef __cplusplus
+/* convert the guest physical address in the guest program to host virtual address in NEMU */
+uint8_t* guest_to_host(paddr_t paddr);
+/* convert the host virtual address in NEMU to guest physical address in the guest program */
+paddr_t host_to_guest(uint8_t *haddr);
+
+static inline bool in_pmem(paddr_t addr) {
+  return addr - CONFIG_MBASE < CONFIG_MSIZE;
 }
-#endif
-//word_t vaddr_ifetch(vaddr_t addr, int len);
-//word_t vaddr_read(vaddr_t addr);
-//void vaddr_write(vaddr_t addr, int len, word_t data);
 
-#define PAGE_SHIFT        12
-#define PAGE_SIZE         (1ul << PAGE_SHIFT)
-#define PAGE_MASK         (PAGE_SIZE - 1)
+word_t paddr_read(paddr_t addr, int len);
+void paddr_write(paddr_t addr, int len, word_t data);
 
 #endif

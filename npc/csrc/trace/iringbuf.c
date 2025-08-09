@@ -10,7 +10,7 @@ void ringbuf_init(ringbuf_t *rb) {
 }
 
 void ringbuf_push(ringbuf_t *rb, uint32_t pc, uint8_t *code, int nbyte) {
-    
+  
   // Clear previous arrow
   size_t prev = (rb->head + RINGBUF_SIZE - 1) % RINGBUF_SIZE;
   if (rb->buf[prev][0] != '\0') {
@@ -22,7 +22,7 @@ void ringbuf_push(ringbuf_t *rb, uint32_t pc, uint8_t *code, int nbyte) {
 
   char disas[64];
   char raw[32];
-
+  //printf("ringbuf_push: pc = 0x%08x, code = 0x%02x%02x%02x%02x, nbyte = %d\n", pc, code[0], code[1], code[2], code[3], nbyte);
   disassemble_full(disas, sizeof(disas), raw, sizeof(raw), pc, code, nbyte);
 
   snprintf(line + 4, RINGBUF_STRING_SIZE - 4, "0x%08x: %-30.30s %.30s", pc, disas, raw);

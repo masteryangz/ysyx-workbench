@@ -13,31 +13,31 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __MEMORY_VADDR_H__
-#define __MEMORY_VADDR_H__
+#include <isa.h>
+#include <memory/paddr.h>
 
-#include <common.h>
+// this is not consistent with uint8_t
+// but it is ok since we do not access the array directly
+static const uint32_t img [] = {
+  0x00000297,  // auipc t0,0
+  0x00028823,  // sb  zero,16(t0)
+  0x0102c503,  // lbu a0,16(t0)
+  0x00100073,  // ebreak (used as nemu_trap)
+  0xdeadbeef,  // some data
+};
 
-#define MEM_SIZE 1 << 16 // 2^31 bytes = 2 GiB
+static void restart() {
+  /* Set the initial program counter. */
+  cpu.pc = RESET_VECTOR;
 
-extern word_t mem[MEM_SIZE];
-void init_mem_from_file(const char *filename);
-void print_mem(vaddr_t start, vaddr_t end);
-int vaddr_ifetch(vaddr_t addr);
-#ifdef __cplusplus
-extern "C" {
-#endif
-int pmem_read(int raddr);
-void pmem_write(int waddr, int wdata, char wmask);
-#ifdef __cplusplus
+  /* The zero register is always 0. */
+  cpu.gpr[0] = 0;
 }
-#endif
-//word_t vaddr_ifetch(vaddr_t addr, int len);
-//word_t vaddr_read(vaddr_t addr);
-//void vaddr_write(vaddr_t addr, int len, word_t data);
 
-#define PAGE_SHIFT        12
-#define PAGE_SIZE         (1ul << PAGE_SHIFT)
-#define PAGE_MASK         (PAGE_SIZE - 1)
+void init_isa() {
+  /* Load built-in image. */
+  memcpy(guest_to_host(RESET_VECTOR), img, sizeof(img));
 
-#endif
+  /* Initialize this virtual computer system. */
+  restart();
+}

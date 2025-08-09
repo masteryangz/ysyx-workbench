@@ -17,6 +17,7 @@
 #define __RISCV_REG_H__
 
 #include <common.h>
+#include <sim_main.h>
 #include "../obj_dir/VTop___024root.h"
 //#include "verilated.h"
 //#include "verilated_dpi.h"

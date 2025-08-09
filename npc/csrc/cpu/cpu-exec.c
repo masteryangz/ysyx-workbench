@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <cpu/cpu.h>
-//#include <cpu/decode.h>
+#include <cpu/decode.h>
 //#include <cpu/difftest.h>
 #include <sdb/watchpoint.h>
 #include <sdb/expr.h>
@@ -32,7 +32,6 @@
  */
 #define MAX_INST_TO_PRINT 10
 ringbuf_t iringbuf;
-//#define CONFIG_WATCHPOINT y
 
 CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
@@ -41,8 +40,8 @@ static bool g_print_step = false;
 
 void device_update();
 
-//static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-static void trace_and_difftest() {
+static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+//static void trace_and_difftest() {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
@@ -59,8 +58,8 @@ static void trace_and_difftest() {
     if (value != wp->value) {
       nemu_state.state = NEMU_STOP;
       printf("pc = %08x: Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
-      //    _this->pc, wp->NO, wp->expr, wp->value, value);
-            get_pc(), wp->NO, wp->expr, wp->value, value);
+          _this->pc, wp->NO, wp->expr, wp->value, value);
+      //      get_pc(), wp->NO, wp->expr, wp->value, value);
       set_value(wp, value);
       return;
     }
@@ -68,15 +67,13 @@ static void trace_and_difftest() {
 #endif
 }
 
-static void exec_once() {
-  //s->pc = pc;
-  //s->snpc = pc;
-  //isa_exec_once(s);
+static void exec_once(Decode *s, vaddr_t pc) {
+  //Log("pc = %08x", pc);
+  s->pc = pc;
+  s->snpc = pc;
+  isa_exec_once(s);
   //IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
-  //cpu.pc = s->dnpc;
-  printf("Sim time: %lu\n", sim_time);
-  top->clock = 0; step_and_dump_wave();
-  top->clock = 1; step_and_dump_wave();
+  cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
@@ -101,17 +98,18 @@ static void exec_once() {
   disassemble(p, s->logbuf + sizeof(s->logbuf) - p,
       MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
   ringbuf_push(&iringbuf, MUXDEF(CONFIG_ISA_x86, s->snpc, s->pc), (uint8_t *)&s->isa.inst, ilen);
+  print_ringbuf(&iringbuf);
 #endif
 }
 
 static void execute(uint64_t n) {
-  //Decode s;
+  Decode s;
   for (;n > 0; n --) {
-    exec_once();
+    exec_once(&s, cpu.pc);
     sim_time++;
     g_nr_guest_inst ++;
-    //trace_and_difftest(&s, cpu.pc);
-    trace_and_difftest();
+    trace_and_difftest(&s, cpu.pc);
+    //trace_and_difftest();
     if (nemu_state.state != NEMU_RUNNING) break;
     //IFDEF(CONFIG_DEVICE, device_update());
   }

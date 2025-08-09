@@ -13,31 +13,15 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __MEMORY_VADDR_H__
-#define __MEMORY_VADDR_H__
+#ifndef __CPU_IFETCH_H__
 
-#include <common.h>
+#include <memory/vaddr.h>
 
-#define MEM_SIZE 1 << 16 // 2^31 bytes = 2 GiB
-
-extern word_t mem[MEM_SIZE];
-void init_mem_from_file(const char *filename);
-void print_mem(vaddr_t start, vaddr_t end);
-int vaddr_ifetch(vaddr_t addr);
-#ifdef __cplusplus
-extern "C" {
-#endif
-int pmem_read(int raddr);
-void pmem_write(int waddr, int wdata, char wmask);
-#ifdef __cplusplus
+static inline uint32_t inst_fetch(vaddr_t *pc, int len) {
+  Log("pc: 0x%08x, len: %d", *pc, len);
+  uint32_t inst = vaddr_ifetch(*pc);
+  (*pc) += len;
+  return inst;
 }
-#endif
-//word_t vaddr_ifetch(vaddr_t addr, int len);
-//word_t vaddr_read(vaddr_t addr);
-//void vaddr_write(vaddr_t addr, int len, word_t data);
-
-#define PAGE_SHIFT        12
-#define PAGE_SIZE         (1ul << PAGE_SHIFT)
-#define PAGE_MASK         (PAGE_SIZE - 1)
 
 #endif
