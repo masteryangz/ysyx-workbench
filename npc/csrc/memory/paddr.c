@@ -15,7 +15,7 @@
 
 #include <memory/host.h>
 #include <memory/paddr.h>
-#include <device/mmio.h>
+//#include <device/mmio.h>
 #include <isa.h>
 
 #if   defined(CONFIG_PMEM_MALLOC)
@@ -27,14 +27,14 @@ static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
-static word_t pmem_read(paddr_t addr, int len) {
-  word_t ret = host_read(guest_to_host(addr), len);
+word_t pmem_read(paddr_t addr) {
+  word_t ret = host_read(guest_to_host(addr), 4);
   //Log("ret = %" PRIX32 "\n", ret);
   return ret;
 }
 
-static void pmem_write(paddr_t addr, int len, word_t data) {
-  host_write(guest_to_host(addr), len, data);
+void pmem_write(paddr_t addr, word_t data) {
+  host_write(guest_to_host(addr), 4, data);
 }
 
 static void out_of_bound(paddr_t addr) {
@@ -49,15 +49,16 @@ void init_mem() {
 #endif
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
+  //print_mem(0, addr - 1);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) {
 #ifdef CONFIG_MTRACE
     printf("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
-      cpu.pc, addr, pmem_read(addr, len), len);
+      cpu.pc, addr, pmem_read(addr), len);
 #endif
-    return pmem_read(addr, len);
+    return pmem_read(addr);
   }
 #ifdef CONFIG_DEVICE
 #ifdef CONFIG_MTRACE
@@ -76,7 +77,38 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   printf("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
   cpu.pc, addr, data, len);
 #endif
-  if (likely(in_pmem(addr))) { pmem_write(addr, len, data); return; }
+  if (likely(in_pmem(addr))) { pmem_write(addr, data); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }
+/*
+void print_mem(vaddr_t start, vaddr_t end) {
+  for (vaddr_t addr = start; addr <= end; addr++) {
+    printf("Address 0x%08x: 0x%08x\n", addr, mem[addr]);
+  }
+}
+*/
+/*
+int pmem_read(int raddr) {
+  // Always read 4 bytes aligned to the address `raddr & ~0x3u` and return to `rdata`
+  //Log("Reading memory at address: 0x%x", raddr);
+  //vaddr_t addr = (raddr - 0x80000000)>>2 & ~0x3u; // align to 4 bytes
+  vaddr_t addr = (raddr - 0x80000000)>>2;
+  //Log("raddr: 0x%x", raddr);
+  //Log("(raddr - 0x80000000)>>2: 0x%x", (raddr - 0x80000000)>>2);
+  //Log("addr: 0x%x", addr);
+  return mem[addr]; // Return the read data
+}
+
+void pmem_write(int waddr, int wdata, char wmask) {
+  // Always write `wdata` according to the write mask `wmask` into 4 bytes aligned to the address `waddr & ~0x3u`
+  // Each bit in `wmask` represents a mask for 1 byte in `wdata`
+  // For example, `wmask = 0x3` means only write the lowest 2 bytes, leaving the other bytes in memory unchanged
+  vaddr_t addr = waddr & ~0x3u; // align to 4 bytes
+  for (int i = 0; i < 4; i++) {
+    if (wmask & (1 << i)) {
+      mem[addr] = (wdata >> (i * 8)) & 0xFF;
+    }
+  }
+}
+*/

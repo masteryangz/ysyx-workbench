@@ -14,8 +14,9 @@
 #**************************************************************************************/
 
 SRCS-y += csrc/sim_main.cpp
+SRCS-y += csrc/monitor.c
 SRCS-y += csrc/dpi.c
-DIRS-y += csrc/cpu csrc/isa csrc/memory csrc/sdb csrc/trace csrc/utils
+DIRS-y += csrc/cpu csrc/isa csrc/memory csrc/sdb csrc/trace csrc/utils csrc/engine
 DIRS-$(CONFIG_MODE_SYSTEM) += csrc/memory
 DIRS-BLACKLIST-$(CONFIG_TARGET_AM) += csrc/sdb
 #$(info in filelist CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))

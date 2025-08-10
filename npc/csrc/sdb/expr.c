@@ -418,7 +418,6 @@ word_t eval(int p, int q, bool *eval_success) {
       *eval_success = true;
       bool success = false;
       word_t value = isa_reg_str2val(tokens[p].str+1, &success);
-      //Log("value = %" PRIu32 ", success = %d", value, success);
       if (!success) {
         //Log("Invalid register name at p = %d: %s", p, tokens[p].str);
         *eval_success = false; // Invalid register name
@@ -565,8 +564,7 @@ word_t eval(int p, int q, bool *eval_success) {
         //Log("Checking logical AND: %" PRIu32 " && %" PRIu32, val1, val2);
         return val1 && val2;
       case TK_DEREF: 
-        return pmem_read(val2); // Read 4 bytes from the address in val2
-        //return vaddr_read(val2); // Dereference the address in val2
+        return vaddr_read(val2, 4); // Dereference the address in val2
       default: assert(0);
     }
   }

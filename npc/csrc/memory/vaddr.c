@@ -14,9 +14,20 @@
 ***************************************************************************************/
 
 #include <isa.h>
-#include <memory/vaddr.h>
-#include <string.h>
+#include <memory/paddr.h>
 
+word_t vaddr_ifetch(vaddr_t addr, int len) {
+  return paddr_read(addr, len);
+}
+
+word_t vaddr_read(vaddr_t addr, int len) {
+  return paddr_read(addr, len);
+}
+
+void vaddr_write(vaddr_t addr, int len, word_t data) {
+  paddr_write(addr, len, data);
+}
+/*
 word_t mem[MEM_SIZE]; // Memory array to hold the contents of the memory
 void init_mem_from_file(const char *filename) {
   //Log("Initializing memory from file: %s\n", filename);
@@ -69,9 +80,4 @@ void pmem_write(int waddr, int wdata, char wmask) {
     }
   }
 }
-
-int vaddr_ifetch(vaddr_t addr) {
-  // Fetch instruction from virtual address `addr` with length `len`
-  // This function is used to read instructions from memory
-  return pmem_read(addr);
-}
+*/

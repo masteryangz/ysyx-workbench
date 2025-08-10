@@ -8,8 +8,8 @@ VTop* top;
 //extern "C" void set_gpr_ptr();
 //extern "C" void set_instr_mem_ptr(uint64_t ptr);
 
-void init_sdb();
-void sdb_mainloop();
+void engine_start();
+void init_monitor(int, char *[]);
 
 const uint64_t max_cycles = 100000;
 uint64_t sim_time = 0;
@@ -50,16 +50,12 @@ static void welcome() {
   // assert(0);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   //Log("Starting simulation...\n");
   sim_init();
   //Log("Simulation initialized.\n");
-  init_mem_from_file("rom.txt");
-  //Log("Memory initialized from rom.txt.\n");
-  init_sdb();
-  //Log("SDB initialized.\n");
-  welcome();
-  sdb_mainloop();
+  init_monitor(argc, argv);
+  engine_start();
   //const uint64_t max_cycles = 100000;
   //uint64_t sim_time = 0;
 /*

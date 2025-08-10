@@ -23,7 +23,7 @@
 #include <isa.h>
 #include <reg/reg.h>
 #include <trace/iringbuf.h>
-//#include <ftrace.h>
+#include <trace/ftrace.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -72,7 +72,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
-  //IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
+  IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;

@@ -29,8 +29,9 @@ override ARGS += $(ARGS_DIFF)
 
 # Command to execute NEMU
 IMG ?=
-ELF ?=
+ELF ?= build/$(ALL)-$(ISA)-nemu.elf
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG) $(ELF)
+#$(info elf=$(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ISA)-nemu.elf)
 
 run-env: $(BINARY) $(DIFF_REF_SO)
 
@@ -41,6 +42,7 @@ runb: run-env
 
 run: run-env
 	$(call git_commit, "run NEMU")
+	@cp $(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ISA)-nemu.elf build/
 #	$(info CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))
 	$(NEMU_EXEC)
 #	$(info IMG = $(IMG))

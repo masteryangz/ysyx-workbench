@@ -9,7 +9,7 @@
 #include <svdpi.h>
 #include <sdb/sdb.h>
 #include <isa.h>
-#include <memory/vaddr.h>
+#include <memory/paddr.h>
 #include <trace/iringbuf.h>
 
 extern VerilatedContext* contextp;

@@ -13,17 +13,17 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
-#ifndef __MEMORY_VADDR_H__
-#define __MEMORY_VADDR_H__
+#include <cpu/cpu.h>
 
-#include <common.h>
+void sdb_mainloop();
 
-word_t vaddr_ifetch(vaddr_t addr, int len);
-word_t vaddr_read(vaddr_t addr, int len);
-void vaddr_write(vaddr_t addr, int len, word_t data);
-
-#define PAGE_SHIFT        12
-#define PAGE_SIZE         (1ul << PAGE_SHIFT)
-#define PAGE_MASK         (PAGE_SIZE - 1)
-
+void engine_start() {
+#ifdef CONFIG_TARGET_AM
+  //Log("batch mode?");
+  cpu_exec(-1);
+#else
+  /* Receive commands from user. */
+  //Log("not batch mode");
+  sdb_mainloop();
 #endif
+}

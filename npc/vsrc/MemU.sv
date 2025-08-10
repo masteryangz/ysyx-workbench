@@ -8,7 +8,7 @@ module MemU #(
     output reg [DATA_WIDTH-1:0] instr   // fetched instruction
 );
 
-    import "DPI-C" context function int pmem_read(input int addr);
+    import "DPI-C" context function int unsigned pmem_read(input int unsigned addr);
 
     // Memory read operation
     always @(posedge clock) begin

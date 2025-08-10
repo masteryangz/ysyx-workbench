@@ -1,5 +1,5 @@
 #include <iringbuf.h>
-//#include "utils/disasm.c"
+#include <common.h>
 int disassemble_full(char *str, int str_size, char *rawbuf, int rawbuf_size, uint64_t pc, uint8_t *code, int nbyte);
 void ringbuf_init(ringbuf_t *rb) {
     for (size_t i = 0; i < RINGBUF_SIZE; i++) {
@@ -22,9 +22,9 @@ void ringbuf_push(ringbuf_t *rb, uint32_t pc, uint8_t *code, int nbyte) {
 
   char disas[64];
   char raw[32];
-
+#ifdef CONFIG_ITRACE
   disassemble_full(disas, sizeof(disas), raw, sizeof(raw), pc, code, nbyte);
-
+#endif
   snprintf(line + 4, RINGBUF_STRING_SIZE - 4, "0x%08x: %-30.30s %.30s", pc, disas, raw);
 
   rb->head = (rb->head + 1) % RINGBUF_SIZE;
