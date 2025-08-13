@@ -35,7 +35,7 @@ static void welcome() {
         "to record the trace. This may lead to a large log file. "
         "If it is not necessary, you can disable it in menuconfig"));
   Log("Build time: %s, %s", __TIME__, __DATE__);
-  printf("Welcome to %s-NEMU!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED));
+  printf("Welcome to %s-NPC!\n", ANSI_FMT(str(__GUEST_ISA__), ANSI_FG_YELLOW ANSI_BG_RED));
   printf("For help, type \"help\"\n");
   // Log("Exercise: Please remove me in the source code and compile NEMU again.");
   // assert(0);
@@ -67,6 +67,7 @@ static long load_img() {
 
   fseek(fp, 0, SEEK_SET);
   int ret = fread(guest_to_host(RESET_VECTOR), size, 1, fp);
+  //Log("RESET_VECTOR = %08x", RESET_VECTOR);
   assert(ret == 1);
 
   fclose(fp);
@@ -97,11 +98,11 @@ static int parse_args(int argc, char *argv[]) {
       case 1: 
         if (arg_stage == 0) {
           img_file = optarg;
-          //Log("img_file = %s", img_file);
+          Log("img_file = %s", img_file);
           arg_stage++;
         } else if (arg_stage == 1) {
           elf_file = optarg;
-          //Log("elf_file = %s", elf_file);
+          Log("elf_file = %s", elf_file);
           arg_stage++;
         }
         break;
@@ -131,6 +132,7 @@ void init_monitor(int argc, char *argv[]) {
   init_rand();
 
   /* Open the log file. */
+  //Log("calling init_log()");
   init_log(log_file);
 
   /* Initialize memory. */

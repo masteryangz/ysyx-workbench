@@ -45,5 +45,6 @@ uint64_t get_time() {
 }
 
 void init_rand() {
+  //Log("init_rand\n");
   srand(get_time_internal());
 }

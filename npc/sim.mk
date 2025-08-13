@@ -11,7 +11,11 @@ export VERILATOR_ROOT
 VERILATOR = $(VERILATOR_ROOT)/bin/verilator
 # VERILATOR_COVERAGE = $(VERILATOR_ROOT)/bin/verilator_coverage
 endif
-
+IMG ?= $(IMAGE)
+ELF ?= elf/$(ALL)-$(ARCH).elf
+ALL ?= dummy
+ARCH ?= riscv32e-npc
+ARGS ?= --log=$(BUILD_DIR)/npc-log.txt
 # Generate C++ in executable form
 VERILATOR_FLAGS += -cc --exe
 #VERILATOR_FLAGS += --dpi-c
@@ -68,8 +72,16 @@ sim:
 
 	@echo
 	@echo "-- RUN ---------------------"
+#	$(info ALL = $(ALL))
+#	$(info ARCH = $(ARCH))
+	@rm -r elf/
+	@mkdir elf/
+	@cp $(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ARCH).elf elf/
 #	obj_dir/V$(DESIGN) +trace
-	obj_dir/V$(DESIGN)
+#	obj_dir/V$(DESIGN)
+#	$(info IMG = $(IMG))
+#	$(info ELF = $(ELF))
+	obj_dir/V$(DESIGN) $(ARGS) $(IMG) $(ELF)
 
 #	@echo
 #	@echo "-- COVERAGE ----------------"

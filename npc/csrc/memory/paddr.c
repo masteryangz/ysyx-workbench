@@ -18,11 +18,11 @@
 //#include <device/mmio.h>
 #include <isa.h>
 
-#if   defined(CONFIG_PMEM_MALLOC)
-static uint8_t *pmem = NULL;
-#else // CONFIG_PMEM_GARRAY
-static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
-#endif
+//#if   defined(CONFIG_PMEM_MALLOC)
+//static uint8_t *pmem = NULL;
+//#else // CONFIG_PMEM_GARRAY
+//static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+//#endif
 
 uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
@@ -30,6 +30,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 word_t pmem_read(paddr_t addr) {
   word_t ret = host_read(guest_to_host(addr), 4);
   //Log("ret = %" PRIX32 "\n", ret);
+  //Log("CONFIG_MBASE = %08x", CONFIG_MBASE);
   return ret;
 }
 
@@ -49,7 +50,7 @@ void init_mem() {
 #endif
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
-  //print_mem(0, addr - 1);
+  //print_mem(0, 10);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
@@ -58,6 +59,7 @@ word_t paddr_read(paddr_t addr, int len) {
     printf("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
       cpu.pc, addr, pmem_read(addr), len);
 #endif
+    //Log("addr = %08x", addr);
     return pmem_read(addr);
   }
 #ifdef CONFIG_DEVICE
@@ -81,13 +83,13 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }
-/*
-void print_mem(vaddr_t start, vaddr_t end) {
-  for (vaddr_t addr = start; addr <= end; addr++) {
-    printf("Address 0x%08x: 0x%08x\n", addr, mem[addr]);
+
+static void print_mem(paddr_t start, paddr_t end) {
+  for (paddr_t addr = start; addr <= end; addr++) {
+    printf("Address 0x%08x: 0x%08x\n", addr, pmem[addr]);
   }
 }
-*/
+
 /*
 int pmem_read(int raddr) {
   // Always read 4 bytes aligned to the address `raddr & ~0x3u` and return to `rdata`

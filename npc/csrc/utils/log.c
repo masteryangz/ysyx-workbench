@@ -21,8 +21,11 @@ extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 void init_log(const char *log_file) {
+  //Log("hi1");
   log_fp = stdout;
+  //Log("hi2");
   if (log_file != NULL) {
+    //Log("log_file exists");
     FILE *fp = fopen(log_file, "w");
     Assert(fp, "Can not open '%s'", log_file);
     log_fp = fp;

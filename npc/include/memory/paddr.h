@@ -18,9 +18,16 @@
 
 #include <common.h>
 
+#if   defined(CONFIG_PMEM_MALLOC)
+static uint8_t *pmem = NULL;
+#else // CONFIG_PMEM_GARRAY
+static uint8_t pmem[CONFIG_MSIZE] PG_ALIGN = {};
+#endif
+
 #define PMEM_LEFT  ((paddr_t)CONFIG_MBASE)
 #define PMEM_RIGHT ((paddr_t)CONFIG_MBASE + CONFIG_MSIZE - 1)
-#define RESET_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
+#define R_VECTOR (PMEM_LEFT + CONFIG_PC_RESET_OFFSET)
+#define RESET_VECTOR pmem[R_VECTOR]
 
 /* convert the guest physical address in the guest program to host virtual address in NEMU */
 uint8_t* guest_to_host(paddr_t paddr);
@@ -42,5 +49,5 @@ void pmem_write(paddr_t addr, word_t data);
 
 word_t paddr_read(paddr_t addr, int len);
 void paddr_write(paddr_t addr, int len, word_t data);
-
+static void print_mem(paddr_t start, paddr_t end);
 #endif

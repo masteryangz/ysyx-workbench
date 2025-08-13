@@ -28,7 +28,9 @@ override ARGS ?= --log=$(BUILD_DIR)/nemu-log.txt
 override ARGS += $(ARGS_DIFF)
 
 # Command to execute NEMU
-IMG ?=
+ALL ?= dummy
+ISA ?= riscv32
+IMG ?= $(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ISA)-nemu.bin
 ELF ?= build/$(ALL)-$(ISA)-nemu.elf
 NEMU_EXEC := $(BINARY) $(ARGS) $(IMG) $(ELF)
 #$(info elf=$(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ISA)-nemu.elf)

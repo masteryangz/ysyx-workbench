@@ -21,8 +21,10 @@ extern uint64_t g_nr_guest_inst;
 FILE *log_fp = NULL;
 
 void init_log(const char *log_file) {
+  //Log("CONFIG_TARGET_NATIVE_ELF = %d", CONFIG_TARGET_NATIVE_ELF);
   log_fp = stdout;
   if (log_file != NULL) {
+    //Log("log_file exists");
     FILE *fp = fopen(log_file, "w");
     Assert(fp, "Can not open '%s'", log_file);
     log_fp = fp;

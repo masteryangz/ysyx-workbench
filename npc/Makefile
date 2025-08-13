@@ -12,7 +12,7 @@ remove_quote = $(patsubst "%",%,$(1))
 # Extract variabls from menuconfig
 GUEST_ISA ?= $(call remove_quote,$(CONFIG_ISA))
 ENGINE ?= $(call remove_quote,$(CONFIG_ENGINE))
-NAME    = $(GUEST_ISA)-nemu-$(ENGINE)
+NAME    = $(GUEST_ISA)-npc-$(ENGINE)
 
 BUILD_DIR = ./build
 IMAGE ?= rom.txt
@@ -53,8 +53,7 @@ test:
 verilog:
 	$(call git_commit, "generate verilog")
 	mkdir -p $(BUILD_DIR)
-#	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR)
-#	$(info IMAGE = $(IMAGE))
+#	$(info image = $(IMAGE))
 	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR)
 #	mill -i $(PRJ).runMain Elaborate --target-dir $(BUILD_DIR) --rom=$(IMAGE).bin
 
