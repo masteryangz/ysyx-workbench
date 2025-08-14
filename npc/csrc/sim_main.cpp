@@ -44,8 +44,6 @@ int main(int argc, char *argv[]) {
   //Log("Simulation initialized.\n");
   init_monitor(argc, argv);
   engine_start();
-  //const uint64_t max_cycles = 100000;
-  //uint64_t sim_time = 0;
 /*
   while (sim_time < max_cycles && !contextp->gotFinish()) {
     printf("Sim time: %lu\n", sim_time);

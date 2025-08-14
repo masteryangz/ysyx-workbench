@@ -12,6 +12,8 @@ class IFIO(memDepth: Int = 256, pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bu
 }
 
 class MemUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
+    val clock           = Input(Clock())
+    val reset           = Input(Bool())
     val pc              = Input(UInt(DATA_WIDTH.W))     // current PC
     //val addr            = Input(UInt((1 << ADDR_WIDTH).W))  // memory address
     //val wdata           = Input(UInt(DATA_WIDTH.W))    // data to write

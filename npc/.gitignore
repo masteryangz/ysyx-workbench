@@ -18,7 +18,7 @@ include/config
 include/generated
 build/
 obj_dir/
-elf/
+image/
 
 # mill
 !*.mill

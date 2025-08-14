@@ -84,9 +84,9 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   out_of_bound(addr);
 }
 
-static void print_mem(paddr_t start, paddr_t end) {
-  for (paddr_t addr = start; addr <= end; addr++) {
-    printf("Address 0x%08x: 0x%08x\n", addr, pmem[addr]);
+void print_mem(paddr_t start, paddr_t end) {
+  for (paddr_t addr = start; addr <= end; addr+4) {
+    //printf("Address 0x%08x: 0x%02020202x\n", addr, (uint8_t)pmem[addr+3], (uint8_t)pmem[addr+2], (uint8_t)pmem[addr+1], (uint8_t)pmem[addr]);
   }
 }
 

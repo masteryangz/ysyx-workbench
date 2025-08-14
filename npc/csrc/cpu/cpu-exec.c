@@ -69,6 +69,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   //Log("pc = %08x", pc);
+  if (sim_time >= max_cycles || contextp->gotFinish()) {
+    nemu_state.state = NEMU_END;
+  }
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
@@ -125,7 +128,7 @@ static void statistic() {
 }
 
 void assert_fail_msg() {
-  //isa_reg_display();
+  isa_reg_display();
   statistic();
   IFDEF(CONFIG_ITRACE, print_ringbuf(&iringbuf));
 }

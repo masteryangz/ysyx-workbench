@@ -71,6 +71,7 @@ static int cmd_info(char *args) {
   }
 
   if (strcmp(args, "r") == 0) {
+    top->eval();
     isa_reg_display();
   }
   else if (strcmp(args, "w") == 0) {

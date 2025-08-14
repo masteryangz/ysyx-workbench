@@ -22,7 +22,8 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   //val regBridge = Module(new regBridge(ADDR_WIDTH, DATA_WIDTH))
 
   // connect
-  //io.pc                   := instrfet.io.pc
+  memU.io.clock           := clock
+  memU.io.reset           := reset
   io.goodTrap             := decoder.io.goodTrap
   memU.io.pc              := instrfet.io.pc
   decoder.io.pc           := instrfet.io.pc
