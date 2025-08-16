@@ -23,6 +23,7 @@ PRJ = playground
 FILELIST_MK = $(shell find -L ./csrc -name "filelist.mk")
 #$(info FILELIST_MK = $(FILELIST_MK))
 include $(FILELIST_MK)
+#include tools/difftest.mk
 
 # Filter out directories and files in blacklist to obtain the final set of source files
 DIRS-BLACKLIST-y += $(DIRS-BLACKLIST)

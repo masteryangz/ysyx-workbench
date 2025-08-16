@@ -41,7 +41,7 @@ static inline bool in_pmem(paddr_t addr) {
 extern "C" {
 #endif
 word_t pmem_read(paddr_t raddr);
-void pmem_write(paddr_t addr, word_t data);
+void pmem_write(paddr_t addr, word_t data, char wmask);
 #ifdef __cplusplus
 }
 #endif

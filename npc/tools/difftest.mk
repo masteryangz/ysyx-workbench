@@ -13,20 +13,20 @@
 # See the Mulan PSL v2 for more details.
 #**************************************************************************************/
 
-SRCS-y += csrc/sim_main.cpp
-SRCS-y += csrc/monitor.c
-SRCS-y += csrc/dpi.c
-DIRS-y += csrc/cpu csrc/isa csrc/memory csrc/sdb csrc/trace csrc/utils csrc/engine csrc/cpu/difftest/ csrc/isa/difftest/
-DIRS-$(CONFIG_MODE_SYSTEM) += csrc/memory
-DIRS-BLACKLIST-$(CONFIG_TARGET_AM) += csrc/sdb
-#$(info in filelist CONFIG_TARGET_AM = $(CONFIG_TARGET_AM))
-#$(info DIRS-BLACKLIST-y = $(DIRS-BLACKLIST-y))
+ifdef CONFIG_DIFFTEST
+DIFF_REF_PATH = $(NEMU_HOME)/$(call remove_quote,$(CONFIG_DIFFTEST_REF_PATH))
+DIFF_REF_SO = $(DIFF_REF_PATH)/build/$(GUEST_ISA)-$(call remove_quote,$(CONFIG_DIFFTEST_REF_NAME))-so
+MKFLAGS = GUEST_ISA=$(GUEST_ISA) SHARE=1 ENGINE=interpreter
+ARGS_DIFF = --diff=$(DIFF_REF_SO)
+#$(info CONFIG_DIFFTEST_REF_NEMU = $(CONFIG_DIFFTEST_REF_NEMU))
+#$(info GUEST_ISA = $(GUEST_ISA))
+#$(info DIFF_REF_SO = $(DIFF_REF_SO))
 
-SHARE = $(if $(CONFIG_TARGET_SHARE),1,0)
-LIBS += $(if $(CONFIG_TARGET_NATIVE_ELF),-lreadline -ldl -pie,)
+#ifdef CONFIG_DIFFTEST_REF_NEMU
+$(DIFF_REF_SO):
+#	$(info linking)
+	$(MAKE) -s -C $(DIFF_REF_PATH) $(MKFLAGS)
+#endif
 
-ifdef mainargs
-ASFLAGS += -DBIN_PATH=\"$(mainargs)\"
+.PHONY: $(DIFF_REF_SO)
 endif
-#SRCS-$(CONFIG_TARGET_AM) += src/am-bin.S
-#.PHONY: src/am-bin.S
