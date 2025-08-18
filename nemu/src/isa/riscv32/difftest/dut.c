@@ -19,8 +19,8 @@
 
 bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
   for (int i = 0; i < 32; i++) {
-    //Log("reg %s: 0x%08x", reg_name(i), ref_r->gpr[i]);
-    //Log("reg %s: 0x%08x", reg_name(i), cpu.gpr[i]);
+    //Log("ref reg %s: 0x%08x", reg_name(i), ref_r->gpr[i]);
+    //Log("dut reg %s: 0x%08x", reg_name(i), cpu.gpr[i]);
     if (cpu.gpr[i] != ref_r->gpr[i]) {
       return false;
     }

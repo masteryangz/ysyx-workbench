@@ -23,7 +23,7 @@ __EXPORT void difftest_memcpy(paddr_t addr, void *buf, size_t n, bool direction)
   //Log("direction = %s", (direction == DIFFTEST_TO_REF) ? "DIFFTEST_TO_REF" : "DIFFTEST_TO_DUT");
   if (direction == DIFFTEST_TO_REF) {
     word_t *p = (word_t *)buf;
-    Log("p = %08x", p[1]);
+    //Log("p = %08x", p[1]);
     for (size_t i = 0; i < n; i++) {
       paddr_write((paddr_t)(addr + 4*i), 4, p[i]);
     }

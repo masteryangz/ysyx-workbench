@@ -5,12 +5,13 @@ module MemU #(
     input  clock,                   // clock signal
     input  reset,                   // reset signal
     input  [DATA_WIDTH-1:0] pc,     // program counter
-    output reg [DATA_WIDTH-1:0] instr   // fetched instruction
+    output [DATA_WIDTH-1:0] instr   // fetched instruction
 );
 
     import "DPI-C" context function int unsigned pmem_read(input int unsigned addr);
 
     // Memory read operation
+    /*
     always @(posedge clock) begin
         if (reset) begin
             instr <= '0; // Reset instruction to 0
@@ -18,4 +19,6 @@ module MemU #(
             instr <= pmem_read(pc); // Convert byte address to word address
         end
     end
+    */
+    assign instr = reset ? '0 : pmem_read(pc);
 endmodule

@@ -92,6 +92,9 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 }
 
 static void checkregs(CPU_state *ref, vaddr_t pc) {
+  //for (size_t i = 0; i < 32; i++) {
+  //  Log("cpu.gpr[%d] = %08x", i, cpu.gpr[i]);
+  //}
   if (!isa_difftest_checkregs(ref, pc)) {
     //Log("NEMU_ABORT");
     nemu_state.state = NEMU_ABORT;

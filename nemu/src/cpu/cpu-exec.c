@@ -39,6 +39,7 @@ void device_update();
 char *NEMU_STATE();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
+  //Log("_this->pc = %08x, dnpc = %08x", _this->pc, dnpc);
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif

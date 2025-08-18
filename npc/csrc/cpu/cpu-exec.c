@@ -42,7 +42,7 @@ void device_update();
 char *NEMU_STATE();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
-//static void trace_and_difftest() {
+  //Log("_this->pc = %08x, dnpc = %08x", _this->pc, dnpc);
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
 #endif
@@ -60,7 +60,6 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
       nemu_state.state = NEMU_STOP;
       printf("pc = %08x: Watchpoint %d: expression '%s' changed from 0x%08x to 0x%08x\n",
           _this->pc, wp->NO, wp->expr, wp->value, value);
-      //      get_pc(), wp->NO, wp->expr, wp->value, value);
       set_value(wp, value);
       return;
     }

@@ -28,6 +28,7 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 word_t pmem_read(paddr_t addr) {
+  Log("addr = %08x", addr);
   word_t ret = host_read(guest_to_host(addr & ~0x3u), 4);
   //Log("ret = %" PRIX32 "\n", ret);
   //Log("CONFIG_MBASE = %08x", CONFIG_MBASE);
