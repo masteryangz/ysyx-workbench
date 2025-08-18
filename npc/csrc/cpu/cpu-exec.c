@@ -39,6 +39,7 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+char *NEMU_STATE();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 //static void trace_and_difftest() {
@@ -72,6 +73,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   if (sim_time >= max_cycles || contextp->gotFinish()) {
     nemu_state.state = NEMU_END;
   }
+  //Log("nemu_state.state = %s", NEMU_STATE());
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
@@ -112,7 +114,6 @@ static void execute(uint64_t n) {
     sim_time++;
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
-    //trace_and_difftest();
     if (nemu_state.state != NEMU_RUNNING) break;
     //IFDEF(CONFIG_DEVICE, device_update());
   }
@@ -133,10 +134,27 @@ void assert_fail_msg() {
   IFDEF(CONFIG_ITRACE, print_ringbuf(&iringbuf));
 }
 
+char *NEMU_STATE() {
+  switch (nemu_state.state) {
+    case NEMU_RUNNING:
+      return "NEMU_RUNNING";
+    case NEMU_STOP:
+      return "NEMU_STOP";
+    case NEMU_END:
+      return "NEMU_END";
+    case NEMU_ABORT:
+      return "NEMU_ABORT";
+    case NEMU_QUIT:
+      return "NEMU_QUIT";
+    default:
+      return "ERROR";
+  }
+}
+
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INST_TO_PRINT);
-  //Log("nemu_state.state = %s", nemu_state.state);
+  //Log("nemu_state.state = %s", NEMU_STATE());
   switch (nemu_state.state) {
     case NEMU_END: case NEMU_ABORT: case NEMU_QUIT:
       printf("Program execution has ended. To restart the program, exit NPC and run again.\n");

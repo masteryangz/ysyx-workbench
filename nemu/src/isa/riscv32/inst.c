@@ -157,6 +157,7 @@ static int decode_exec(Decode *s) {
 }
 
 int isa_exec_once(Decode *s) {
+  //Log("s->snpc = %08x", s->snpc);
   s->isa.inst = inst_fetch(&s->snpc, 4);
   //Log("%08x\n", s->isa.inst);
   //ringbuf_push(&iringbuf, s->snpc, s->isa.inst);

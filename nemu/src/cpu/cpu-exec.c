@@ -36,6 +36,7 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
+char *NEMU_STATE();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
@@ -65,7 +66,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
+  //Log("nemu_state.state = %s", NEMU_STATE());
   isa_exec_once(s);
+  //Log("nemu_state.state = %s", NEMU_STATE());
   IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
@@ -99,6 +102,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
+    //Log("nemu_state.state = %s", NEMU_STATE());
     exec_once(&s, cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
@@ -122,6 +126,23 @@ void assert_fail_msg() {
   IFDEF(CONFIG_ITRACE, print_ringbuf(&iringbuf));
 }
 
+char *NEMU_STATE() {
+  switch (nemu_state.state) {
+    case NEMU_RUNNING:
+      return "NEMU_RUNNING";
+    case NEMU_STOP:
+      return "NEMU_STOP";
+    case NEMU_END:
+      return "NEMU_END";
+    case NEMU_ABORT:
+      return "NEMU_ABORT";
+    case NEMU_QUIT:
+      return "NEMU_QUIT";
+    default:
+      return "ERROR";
+  }
+}
+
 /* Simulate how the CPU works. */
 void cpu_exec(uint64_t n) {
   g_print_step = (n < MAX_INST_TO_PRINT);
@@ -133,9 +154,9 @@ void cpu_exec(uint64_t n) {
   }
 
   uint64_t timer_start = get_time();
-
+  //Log("nemu_state.state = %s", NEMU_STATE());
   execute(n);
-
+  
   uint64_t timer_end = get_time();
   g_timer += timer_end - timer_start;
 

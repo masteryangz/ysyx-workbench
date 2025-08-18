@@ -93,6 +93,7 @@ void init_difftest(char *ref_so_file, long img_size, int port) {
 
 static void checkregs(CPU_state *ref, vaddr_t pc) {
   if (!isa_difftest_checkregs(ref, pc)) {
+    //Log("NEMU_ABORT");
     nemu_state.state = NEMU_ABORT;
     nemu_state.halt_pc = pc;
     isa_reg_display();
@@ -100,8 +101,9 @@ static void checkregs(CPU_state *ref, vaddr_t pc) {
 }
 
 void difftest_step(vaddr_t pc, vaddr_t npc) {
+  //Log("pc = %08x, npc = %08x", pc, npc);
   CPU_state ref_r;
-
+  //Log("skip_dut_nr_inst = %d", skip_dut_nr_inst);
   if (skip_dut_nr_inst > 0) {
     ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
     if (ref_r.pc == npc) {
@@ -114,7 +116,7 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
       panic("can not catch up with ref.pc = " FMT_WORD " at pc = " FMT_WORD, ref_r.pc, pc);
     return;
   }
-
+  //Log("is_skip_ref = %d", is_skip_ref);
   if (is_skip_ref) {
     // to skip the checking of an instruction, just copy the reg state to reference design
     ref_difftest_regcpy(&cpu, DIFFTEST_TO_REF);
@@ -124,7 +126,9 @@ void difftest_step(vaddr_t pc, vaddr_t npc) {
 
   ref_difftest_exec(1);
   ref_difftest_regcpy(&ref_r, DIFFTEST_TO_DUT);
-
+  //for (size_t i = 0; i < 32; i++) {
+  //  Log("ref_r.gpr[%d] = %08x", i, ref_r.gpr[i]);
+  //}
   checkregs(&ref_r, pc);
 }
 #else

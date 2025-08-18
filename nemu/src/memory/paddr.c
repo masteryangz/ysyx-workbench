@@ -28,8 +28,10 @@ uint8_t* guest_to_host(paddr_t paddr) { return pmem + paddr - CONFIG_MBASE; }
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 
 static word_t pmem_read(paddr_t addr, int len) {
+  //Log("addr = %08x", addr);
   word_t ret = host_read(guest_to_host(addr), len);
-  //Log("ret = %" PRIX32 "\n", ret);
+  //Log("ret = %08x\n", ret);
+  //Log("guest_to_host(addr) = %08x", *guest_to_host(addr));
   return ret;
 }
 
@@ -52,6 +54,7 @@ void init_mem() {
 }
 
 word_t paddr_read(paddr_t addr, int len) {
+  //Log("addr = %08x", addr);
   if (likely(in_pmem(addr))) {
 #ifdef CONFIG_MTRACE
     printf("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
@@ -82,7 +85,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 }
 
 void print_mem(paddr_t start, paddr_t end) {
-  for (paddr_t addr = start; addr <= end; addr++) {
-    printf("Address 0x%08x: 0x%08x\n", addr, pmem[addr]);
+  for (paddr_t addr = start; addr < end; addr = addr+4) {
+    Log("Address 0x%08x: 0x%02x %02x %02x %02x", addr, (uint8_t)pmem[addr+3], (uint8_t)pmem[addr+2], (uint8_t)pmem[addr+1], (uint8_t)pmem[addr]);
   }
 }

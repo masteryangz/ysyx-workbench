@@ -18,6 +18,5 @@ class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   io.rdata1 := rf(io.rs1)
   io.rdata2 := rf(io.rs2)
   io.goodTrap := rf(10) === 0.U
-  //io.rf_out := rf // expose the entire register file
 
 }

@@ -98,11 +98,11 @@ static int parse_args(int argc, char *argv[]) {
       case 1: 
         if (arg_stage == 0) {
           img_file = optarg;
-          Log("img_file = %s", img_file);
+          //Log("img_file = %s", img_file);
           arg_stage++;
         } else if (arg_stage == 1) {
           elf_file = optarg;
-          Log("elf_file = %s", elf_file);
+          //Log("elf_file = %s", elf_file);
           arg_stage++;
         }
         break;
@@ -148,7 +148,7 @@ void init_monitor(int argc, char *argv[]) {
   long img_size = load_img();
   //print_mem(0, 10);
   /* Initialize differential testing. */
-  Log("diff_so_file = %s", diff_so_file);
+  //Log("diff_so_file = %s", diff_so_file);
   init_difftest(diff_so_file, img_size, difftest_port);
 
   /* Initialize the simple debugger. */

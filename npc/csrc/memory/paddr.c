@@ -50,7 +50,6 @@ void init_mem() {
 #endif
   IFDEF(CONFIG_MEM_RANDOM, memset(pmem, rand(), CONFIG_MSIZE));
   Log("physical memory area [" FMT_PADDR ", " FMT_PADDR "]", PMEM_LEFT, PMEM_RIGHT);
-  //print_mem(0, 10);
 }
 
 word_t paddr_read(paddr_t addr, int len) {
@@ -100,8 +99,8 @@ void paddr_write(paddr_t addr, int len, word_t data) {
 }
 
 void print_mem(paddr_t start, paddr_t end) {
-  for (paddr_t addr = start; addr <= end; addr+4) {
-    //printf("Address 0x%08x: 0x%02020202x\n", addr, (uint8_t)pmem[addr+3], (uint8_t)pmem[addr+2], (uint8_t)pmem[addr+1], (uint8_t)pmem[addr]);
+  for (paddr_t addr = start; addr < end; addr = addr+4) {
+    Log("Address 0x%08x: 0x%02x %02x %02x %02x", addr, (uint8_t)pmem[addr+3], (uint8_t)pmem[addr+2], (uint8_t)pmem[addr+1], (uint8_t)pmem[addr]);
   }
 }
 
