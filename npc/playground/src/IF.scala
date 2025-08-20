@@ -1,18 +1,23 @@
 package npc
 
 import chisel3._
-//import chisel3.util.experimental.loadMemoryFromFile
+import chisel3.experimental.IntParam
 
-class IF(pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Module {
+class IF(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends BlackBox(Map(
+    "pcInc" -> IntParam(pcInc),
+    "ADDR_WIDTH" -> IntParam(ADDR_WIDTH),
+    "DATA_WIDTH" -> IntParam(DATA_WIDTH)
+  )){
     val io = IO(new IFIO())
     //val isEbreak    = io.instr === "h00100073".U
     //val trapReg     = RegNext(isEbreak, false.B)
     //io.trapPulse    := isEbreak && !trapReg // 只在 isEbreak 从 0 变成 1 的时钟沿为 true
     // Reg for Program Counter (PC) 
-    val pcReg = RegInit(0x80000000L.U(DATA_WIDTH.W))
+    //val pcReg = RegInit(0x80000000L.U(DATA_WIDTH.W))
 
     // PC update logic
     //pcReg := pcReg + pcInc.U
+    /*
     when(io.is_jump) {
         pcReg := io.target
     } .otherwise {
@@ -21,5 +26,5 @@ class IF(pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Module {
 
     // Output current PC
     io.pc := pcReg
-
+    */
 }
