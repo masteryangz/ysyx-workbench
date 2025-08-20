@@ -8,13 +8,15 @@ module IF #(
     input   is_jump,
     input   valid,
     input   wen,
+    input   [DATA_WIDTH-1:0] addr,
+    input   [DATA_WIDTH-1:0] wdata,
     input   [DATA_WIDTH-1:0] target,
     output  [DATA_WIDTH-1:0] pc,     // program counter
     output  [DATA_WIDTH-1:0] instr   // fetched instruction
 );
 
     import "DPI-C" context function int unsigned pmem_read(input int unsigned addr);
-    import "DPI-C" context function int unsigned pmem_write(input int unsigned waddr, input int unsigned wdata, input byte wmask);
+    import "DPI-C" context function int unsigned pmem_write(input int unsigned addr, input int unsigned wdata, input byte wmask);
 
     reg [DATA_WIDTH-1:0] pcReg;
     reg [DATA_WIDTH-1:0] rdata;
@@ -31,9 +33,9 @@ module IF #(
 
     always @(*) begin
         if (valid) begin // 有读写请求时
-            rdata = pmem_read(raddr);
+            rdata = pmem_read(addr);
             if (wen) begin // 有写请求时
-                pmem_write(waddr, wdata, wmask);
+                pmem_write(addr, wdata, 4'b1111);
             end
         end
         else begin

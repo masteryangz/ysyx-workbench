@@ -19,7 +19,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     regfile.io.rs2      := rs2
     regfile.io.rd       := rd
     regfile.io.wdata    := io.wdata
-    regfile.io.wen      := io.wen
+    regfile.io.wen      := io.rwen
     regfile.io.pc       := io.pc
 
     // Outputs

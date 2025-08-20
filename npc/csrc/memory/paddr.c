@@ -36,7 +36,13 @@ word_t pmem_read(paddr_t addr) {
 }
 
 void pmem_write(paddr_t addr, word_t data, char wmask) {
-  host_write(guest_to_host(addr & ~0x3u), 4, data & wmask);
+  word_t wdata = 0;
+  for (int i = 0; i < 4; i++) {
+    if (wmask & (1 << i)) {
+      wdata = wdata & (data & (0xFF << (8 * i)));
+    }
+  }
+  host_write(guest_to_host(addr & ~0x3u), 4, wdata);
 }
 
 static void out_of_bound(paddr_t addr) {
@@ -78,16 +84,16 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   char wmask;
   switch(len) {
     case 1:
-      wmask = 0b11;
+      wmask = 0b1;
       break;
     case 2:
-      wmask = 0b1111;
+      wmask = 0b11;
       break;
     case 4:
-      wmask = 0b11111111;
+      wmask = 0b1111;
       break;
     default:
-      wmask = 0b11111111;
+      wmask = 0b1111;
       break;
   }
 #ifdef CONFIG_MTRACE
