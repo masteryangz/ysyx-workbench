@@ -44,6 +44,7 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
 
 class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val wdata           = Output(UInt(DATA_WIDTH.W))
+    val addr            = Output(UInt(DATA_WIDTH.W))
     val rwen            = Output(Bool())
     val is_jump         = Output(Bool())
     val target          = Output(UInt(DATA_WIDTH.W))

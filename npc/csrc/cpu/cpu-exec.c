@@ -39,7 +39,7 @@ static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
 
 void device_update();
-char *NEMU_STATE();
+const char *NEMU_STATE();
 
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
   //Log("_this->pc = %08x, dnpc = %08x", _this->pc, dnpc);
@@ -76,6 +76,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
+  //Log("isa_exec_once");
   IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
@@ -109,7 +110,9 @@ static void exec_once(Decode *s, vaddr_t pc) {
 static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
+    //Log("cpu executing");
     exec_once(&s, cpu.pc);
+    //Log("cpu exec_once");
     sim_time++;
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
@@ -133,21 +136,29 @@ void assert_fail_msg() {
   IFDEF(CONFIG_ITRACE, print_ringbuf(&iringbuf));
 }
 
-char *NEMU_STATE() {
+const char *NEMU_STATE() {
+  static const char *buf;
   switch (nemu_state.state) {
     case NEMU_RUNNING:
-      return "NEMU_RUNNING";
+      buf = "NEMU_RUNNING";
+      break;
     case NEMU_STOP:
-      return "NEMU_STOP";
+      buf = "NEMU_STOP";
+      break;
     case NEMU_END:
-      return "NEMU_END";
+      buf = "NEMU_END";
+      break;
     case NEMU_ABORT:
-      return "NEMU_ABORT";
+      buf = "NEMU_ABORT";
+      break;
     case NEMU_QUIT:
-      return "NEMU_QUIT";
+      buf = "NEMU_QUIT";
+      break;
     default:
-      return "ERROR";
+      buf = "ERROR";
+      break;
   }
+  return (char *)buf;
 }
 
 /* Simulate how the CPU works. */

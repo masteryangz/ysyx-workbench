@@ -19,8 +19,9 @@ uint64_t sim_time = 0;
 void step_and_dump_wave() {  
   //Log("Sim time: %lu", sim_time);
   top->eval();
-  //Log("Sim time: %lu", sim_time);
+  //Log("hi");
   contextp->timeInc(1);
+  //Log("Sim time: %lu", sim_time);
   tfp->dump(contextp->time());
 }
 

@@ -291,15 +291,16 @@ void sdb_mainloop() {
 }
 
 void init_sdb() {
+  //Log("starting init_sdb");
   /* Compile the regular expressions. */
   init_regex();
 
   /* Initialize the watchpoint pool. */
   init_wp_pool();
-  //Log("Watchpoint pool initialized.\n");
+  //Log("Watchpoint pool initialized.");
   /* Initialize npc */
   top->reset = 1;
-  //Log("Resetting the simulation...\n");
+  //Log("Resetting the simulation...");
   for (int i = 0; i < 2; ++i) {
     top->clock = 0; step_and_dump_wave();
     top->clock = 1; step_and_dump_wave();

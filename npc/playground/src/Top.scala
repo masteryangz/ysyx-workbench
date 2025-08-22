@@ -36,6 +36,8 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   instrfet.io.is_jump     := alu.io.is_jump
   instrfet.io.valid       := alu.io.valid
   instrfet.io.wen         := alu.io.mwen
+  instrfet.io.addr        := alu.io.addr
+  instrfet.io.wdata       := alu.io.wdata
   dpiEnd.io.trap          := trapPulse
 
 

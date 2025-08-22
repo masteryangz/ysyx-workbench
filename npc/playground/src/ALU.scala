@@ -6,18 +6,22 @@ import chisel3.util._
 class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     val io = IO(new ALUIO())
 
-    val adder = Module(new adder(DATA_WIDTH))
+    val adder1 = Module(new adder(DATA_WIDTH))
+    val adder2 = Module(new adder(DATA_WIDTH))
 
     //concatenate together
     val opFunct3 = Cat(io.Op, io.funct3)
 
     // default
     io.wdata        := 0.U
+    io.addr         := 0.U
     io.rwen         := false.B
     io.is_jump      := false.B
     io.target       := 0.U
-    adder.io.add1   := 0.U
-    adder.io.add2   := 0.U
+    adder1.io.add1  := 0.U
+    adder1.io.add2  := 0.U
+    adder2.io.add1  := 0.U
+    adder2.io.add2  := 0.U
     io.valid        := false.B
     io.mwen         := false.B
 
@@ -26,10 +30,9 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
         is("b0010011".U) {
             switch(io.funct3) {
                 is("b000".U) { // ADDI
-                    //io.wdata    := io.rdata1 + io.imm
-                    io.wdata        := adder.io.result
-                    adder.io.add1   := io.rdata1
-                    adder.io.add2   := io.imm
+                    io.wdata        := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
                     io.rwen         := true.B
                 }
                 is("b010".U) { // SLTI
@@ -55,23 +58,17 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
             }
         }
         is("b1100111".U) {
-            //io.wdata    := io.pc + pcInc.U
-            io.wdata        := adder.io.result
-            adder.io.add1   := io.pc
-            adder.io.add2   := pcInc.U
+            io.wdata        := adder1.io.result
+            adder1.io.add1  := io.pc
+            adder1.io.add2  := pcInc.U
             io.rwen         := true.B
             io.is_jump      := true.B
             io.target       := (io.rdata1 + io.imm) & ~1.U(DATA_WIDTH.W)
-            //printf("io.target = 0x%x\n", io.target)
-            //printf("io.rdata1 + io.imm = 0x%x\n", io.rdata1 + io.imm)
-            //printf("~0x1.U = 0x%x\n", ~1.U(DATA_WIDTH.W))
-            //printf("(io.rdata1 + io.imm) & ~0x1.U = 0x%x\n", (io.rdata1 + io.imm) & ~1.U(DATA_WIDTH.W))
         }
         is("b0010111".U) {
-            //io.wdata    := io.pc + io.imm
-            io.wdata        := adder.io.result
-            adder.io.add1   := io.pc
-            adder.io.add2   := io.imm
+            io.wdata        := adder1.io.result
+            adder1.io.add1  := io.pc
+            adder1.io.add2  := io.imm
             io.rwen         := true.B
         }
         is("b0110111".U) {
@@ -79,13 +76,23 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
             io.rwen     := true.B
         }
         is("b1101111".U) {
-            //io.wdata    := io.pc + pcInc.U
-            io.wdata        := adder.io.result
-            adder.io.add1   := io.pc
-            adder.io.add2   := pcInc.U
+            io.wdata        := adder2.io.result
+            adder2.io.add1  := io.pc
+            adder2.io.add2  := pcInc.U
             io.rwen         := true.B
             io.is_jump      := true.B
-            io.target       := io.pc + io.imm
+            //io.target       := io.pc + io.imm
+            io.target       := adder1.io.result
+            adder1.io.add1  := io.pc
+            adder1.io.add2  := io.imm 
+        }
+        is("b0100011".U) {
+            io.addr         := adder1.io.result
+            adder1.io.add1  := io.rdata1
+            adder1.io.add2  := io.imm
+            io.wdata        := io.rdata2
+            io.valid        := true.B
+            io.mwen         := true.B
         }
     }
 

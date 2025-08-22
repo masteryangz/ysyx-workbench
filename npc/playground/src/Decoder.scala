@@ -23,14 +23,13 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     regfile.io.pc       := io.pc
 
     // Outputs
-    //io.trapPulse    := io.In_trapPulse
     io.rdata1       := regfile.io.rdata1
     io.rdata2       := regfile.io.rdata2
     io.Op           := io.instr(6, 0)
     io.funct3       := io.instr(14, 12)
     io.imm          := 0.U
     io.goodTrap     := regfile.io.goodTrap
-    //io.rf_out       := regfile.io.rf_out
+
     switch(io.Op) {
         is("b0010011".U) {
             io.imm := io.instr(DATA_WIDTH-1, 20).asSInt.pad(DATA_WIDTH).asUInt
@@ -40,6 +39,9 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
         }
         is("b1101111".U) {
             io.imm := Cat(io.instr(DATA_WIDTH-1), io.instr(19, 12), io.instr(20), io.instr(30, 21)).asSInt.pad(DATA_WIDTH).asUInt << 1
+        }
+        is("b0100011".U) {
+            io.imm := Cat(io.instr(DATA_WIDTH-1, 25), io.instr(11, 7)).asSInt.pad(DATA_WIDTH).asUInt
         }
     }
 }
