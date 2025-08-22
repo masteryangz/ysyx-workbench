@@ -26,9 +26,9 @@ static int decode_exec(Decode *s) {
   //Log("s->dnpc = %08x, s->snpc = %08x", s->dnpc, s->snpc);
   Log("Sim time: %lu", sim_time);
   top->clock = 0; step_and_dump_wave();
-  Log("half step");
+  //Log("half step");
   top->clock = 1; step_and_dump_wave();
-  Log("one step");
+  //Log("one step");
   cpu.pc = get_pc();
   for (int i = 0; i < 32; i++) {
     cpu.gpr[i] = get_gpr(i);
