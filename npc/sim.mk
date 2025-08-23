@@ -64,6 +64,7 @@ sim:
 	@echo
 	@echo "-- VERILATE ----------------"
 	@cp $(NEMU_HOME)/build/riscv32-nemu-interpreter-so image/
+	@cp $(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ARCH).bin image/
 	@cp $(AM_HOME)/../am-kernels/tests/cpu-tests/build/$(ALL)-$(ARCH).elf image/
 	$(VERILATOR) $(VERILATOR_FLAGS) $(VERILATOR_INPUT)
 

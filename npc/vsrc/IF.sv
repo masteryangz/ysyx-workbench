@@ -26,7 +26,7 @@ module IF #(
             pcReg   <= 32'h80000000;
             //instr   <= pmem_read(32'h80000000);
         end else begin
-            pcReg   <= is_jump ? (pcReg + target) : (pcReg + pcInc);
+            pcReg   <= is_jump ? target : (pcReg + pcInc);
             //instr   <= pmem_read(pcReg); // Convert byte address to word address
         end
     end

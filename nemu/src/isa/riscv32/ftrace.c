@@ -138,11 +138,11 @@ void ftrace_log(vaddr_t pc, vaddr_t target, bool is_call, bool is_ret) {
   if (callee) {
     //Log("callee is %s", callee);
     if (is_call) {
-      printf("[ftrace] %*sCall %s@0x%x\n", call_depth * 2, "", callee, target);
+      Ftrace("[ftrace] %*sCall %s@0x%x\n", call_depth * 2, "", callee, target);
       call_depth++;
     } else if (is_ret) {
       call_depth--;
-      printf("[ftrace] %*sReturn from %s\n", call_depth * 2, "", callee);
+      Ftrace("[ftrace] %*sReturn from %s\n", call_depth * 2, "", callee);
     }
   }
 }

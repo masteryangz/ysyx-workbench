@@ -24,6 +24,14 @@
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_BLUE) "\n", \
         __FILE__, __LINE__, __func__, ## __VA_ARGS__)
 
+#define Mtrace(format, ...) \
+    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_YELLOW) "\n", \
+        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+
+#define Ftrace(format, ...) \
+    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_MAGENTA) "\n", \
+        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \
