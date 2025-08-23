@@ -31,7 +31,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.goodTrap     := regfile.io.goodTrap
 
     switch(io.Op) {
-        is("b0010011".U) {
+        is(Seq("b0010011".U, "b0000011".U)) {
             io.imm := io.instr(DATA_WIDTH-1, 20).asSInt.pad(DATA_WIDTH).asUInt
         }
         is(BitPat("b0?10111").value.asUInt) {
