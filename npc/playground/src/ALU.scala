@@ -58,12 +58,14 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
             }
         }
         is("b1100111".U) {
-            io.wdata        := adder1.io.result
-            adder1.io.add1  := io.pc
-            adder1.io.add2  := pcInc.U
+            io.wdata        := adder2.io.result
+            adder2.io.add1  := io.pc
+            adder2.io.add2  := pcInc.U
             io.rwen         := true.B
             io.is_jump      := true.B
-            io.target       := (io.rdata1 + io.imm) & ~1.U(DATA_WIDTH.W)
+            io.target       := adder1.io.result & ~1.U(DATA_WIDTH.W)
+            adder1.io.add1  := io.rdata1
+            adder1.io.add2  := io.imm
         }
         is("b0010111".U) {
             io.wdata        := adder1.io.result
@@ -81,7 +83,6 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
             adder2.io.add2  := pcInc.U
             io.rwen         := true.B
             io.is_jump      := true.B
-            //io.target       := io.pc + io.imm
             io.target       := adder1.io.result
             adder1.io.add1  := io.pc
             adder1.io.add2  := io.imm 
