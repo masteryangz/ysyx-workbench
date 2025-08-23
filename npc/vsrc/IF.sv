@@ -12,14 +12,15 @@ module IF #(
     input   [DATA_WIDTH-1:0] wdata,
     input   [DATA_WIDTH-1:0] target,
     output  [DATA_WIDTH-1:0] pc,     // program counter
-    output  [DATA_WIDTH-1:0] instr   // fetched instruction
+    output  [DATA_WIDTH-1:0] instr,  // fetched instruction
+    output  reg [DATA_WIDTH-1:0] rdata
 );
 
     import "DPI-C" context function int unsigned pmem_read(input int unsigned addr);
     import "DPI-C" context function void pmem_write(input int unsigned addr, input int unsigned wdata, input byte wmask);
 
     reg [DATA_WIDTH-1:0] pcReg = 32'h80000000;
-    reg [DATA_WIDTH-1:0] rdata;
+    //reg [DATA_WIDTH-1:0] rdata;
 
     always @(posedge clock) begin
         if (reset) begin

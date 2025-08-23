@@ -6,7 +6,7 @@ import chisel3.util._
 class IFIO(pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bundle {
     val pc          = Output(UInt(DATA_WIDTH.W))    // current PC
     val instr       = Output(UInt(DATA_WIDTH.W))    // fetched instruction
-    //val trapPulse   = Output(Bool())                // trap pulse for ebreak instruction
+    val rdata       = Output(UInt(DATA_WIDTH.W))    // read data (for store instructions)
     val target      = Input(UInt(DATA_WIDTH.W))     // target address for jump
     val addr        = Input(UInt(DATA_WIDTH.W))
     val wdata       = Input(UInt(DATA_WIDTH.W))
@@ -33,7 +33,9 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val pc              = Input(UInt(DATA_WIDTH.W)) // current PC
     val instr           = Input(UInt(DATA_WIDTH.W))
     val wdata           = Input(UInt(DATA_WIDTH.W))
+    val rdata           = Input(UInt(DATA_WIDTH.W))
     val rwen            = Input(Bool())
+    val valid           = Input(Bool())
     val rdata1          = Output(UInt(DATA_WIDTH.W))
     val rdata2          = Output(UInt(DATA_WIDTH.W))
     val Op              = Output(UInt(7.W))

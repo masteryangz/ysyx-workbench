@@ -18,7 +18,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     regfile.io.rs1      := rs1
     regfile.io.rs2      := rs2
     regfile.io.rd       := rd
-    regfile.io.wdata    := io.wdata
+    regfile.io.wdata    := Mux(io.valid, io.rdata, io.wdata)
     regfile.io.wen      := io.rwen
     regfile.io.pc       := io.pc
 
