@@ -76,7 +76,8 @@ static void exec_once(Decode *s, vaddr_t pc) {
   s->pc = pc;
   s->snpc = pc;
   isa_exec_once(s);
-  //Log("isa_exec_once");
+  //Log("pc = %08x", cpu.pc);
+  //Log("s->dnpc = %08x, s->snpc = %08x", s->dnpc, s->snpc);
   IFDEF(CONFIG_FTRACE, ftrace_try_log(s));
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
@@ -112,7 +113,7 @@ static void execute(uint64_t n) {
   for (;n > 0; n --) {
     //Log("cpu executing");
     exec_once(&s, cpu.pc);
-    //Log("cpu exec_once");
+    //Log("cpu.pc = %08x", cpu.pc);
     sim_time++;
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);

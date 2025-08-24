@@ -27,6 +27,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.rdata2       := regfile.io.rdata2
     io.Op           := io.instr(6, 0)
     io.funct3       := io.instr(14, 12)
+    io.funct7       := io.instr(31, 25)
     io.imm          := 0.U
     io.goodTrap     := regfile.io.goodTrap
 

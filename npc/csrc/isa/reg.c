@@ -64,6 +64,7 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 }
 
 word_t get_pc() {
+  //Log("Getting pc = 0x%08x", top->rootp->Top__DOT__instrfet__DOT__pcReg);
   return top->rootp->Top__DOT__instrfet__DOT__pcReg;
 }
 

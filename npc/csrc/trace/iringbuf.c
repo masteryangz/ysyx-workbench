@@ -10,7 +10,7 @@ void ringbuf_init(ringbuf_t *rb) {
 }
 
 void ringbuf_push(ringbuf_t *rb, uint32_t pc, uint8_t *code, int nbyte) {
-
+  //Log("pc = 0x%08x", pc);
   // Clear previous arrow
   size_t prev = (rb->head + RINGBUF_SIZE - 1) % RINGBUF_SIZE;
   if (rb->buf[prev][0] != '\0') {

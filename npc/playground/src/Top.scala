@@ -32,6 +32,7 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   alu.io.rdata2           := decoder.io.rdata2
   alu.io.Op               := decoder.io.Op
   alu.io.funct3           := decoder.io.funct3
+  alu.io.funct7           := decoder.io.funct7
   alu.io.imm              := decoder.io.imm
   alu.io.pc               := instrfet.io.pc
   instrfet.io.target      := alu.io.target

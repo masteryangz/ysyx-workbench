@@ -10,7 +10,7 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
     val adder2 = Module(new adder(DATA_WIDTH))
 
     //concatenate together
-    val opFunct3 = Cat(io.Op, io.funct3)
+    val Funct = Cat(io.funct3, io.funct7)
 
     // default
     io.wdata        := 0.U
@@ -115,95 +115,97 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
                     when(io.rdata1 === io.rdata2) {
                         io.is_jump  := true.B
                         io.target   := adder1.io.result
+                        adder1.io.add1  := io.pc
+                        adder1.io.add2  := io.imm
                     }
-                    adder1.io.add1  := io.pc
-                    adder1.io.add2  := io.imm
                 }
                 is("b001".U) { // BNE
                     when(io.rdata1 =/= io.rdata2) {
                         io.is_jump  := true.B
                         io.target   := adder1.io.result
+                        adder1.io.add1  := io.pc
+                        adder1.io.add2  := io.imm
                     }
-                    adder1.io.add1  := io.pc
-                    adder1.io.add2  := io.imm
                 }
                 is("b100".U) { // BLT
                     when(io.rdata1.asSInt < io.rdata2.asSInt) {
                         io.is_jump  := true.B
                         io.target   := adder1.io.result
+                        adder1.io.add1  := io.pc
+                        adder1.io.add2  := io.imm
                     }
-                    adder1.io.add1  := io.pc
-                    adder1.io.add2  := io.imm
                 }
                 is("b101".U) { // BGE
                     when(io.rdata1.asSInt >= io.rdata2.asSInt) {
                         io.is_jump  := true.B
                         io.target   := adder1.io.result
+                        adder1.io.add1  := io.pc
+                        adder1.io.add2  := io.imm
                     }
-                    adder1.io.add1  := io.pc
-                    adder1.io.add2  := io.imm
                 }
                 is("b110".U) { // BLTU
                     when(io.rdata1 < io.rdata2) {
                         io.is_jump  := true.B
                         io.target   := adder1.io.result
+                        adder1.io.add1  := io.pc
+                        adder1.io.add2  := io.imm
                     }
-                    adder1.io.add1  := io.pc
-                    adder1.io.add2  := io.imm
                 }
                 is("b111".U) { // BGEU
                     when(io.rdata1 >= io.rdata2) {
                         io.is_jump  := true.B
                         io.target   := adder1.io.result
+                        adder1.io.add1  := io.pc
+                        adder1.io.add2  := io.imm
                     }
-                    adder1.io.add1  := io.pc
-                    adder1.io.add2  := io.imm
                 }
             }
         }
         is("b0110011".U) {
-            switch(opFunct3) {
-                is("b0000000".U) { // ADD
+            switch(Funct) {
+                is("b0000000000".U) { // ADD
                     io.wdata        := adder1.io.result
                     adder1.io.add1  := io.rdata1
                     adder1.io.add2  := io.rdata2
                     io.rwen         := true.B
                 }
-                is("b0001000".U) { // SUB
+                is("b0000100000".U) { // SUB
                     io.wdata        := adder1.io.result
                     adder1.io.add1  := io.rdata1
                     adder1.io.add2  := (~io.rdata2).asUInt + 1.U
                     io.rwen         := true.B
                 }
-                is("b0010000".U) { // SLL
+                is("b0010000000".U) { // SLL
                     io.wdata    := (io.rdata1 << io.rdata2(4,0))(DATA_WIDTH-1,0)
                     io.rwen     := true.B
                 }
+                /*
                 is("b0011000".U) { // SLT
                     io.wdata    := (io.rdata1.asSInt < io.rdata2.asSInt).asUInt
                     io.rwen     := true.B
                 }
-                is("b0011001".U) { // SLTU
+                */
+                is("b0110000000".U) { // SLTU
                     io.wdata    := (io.rdata1 < io.rdata2).asUInt
                     io.rwen     := true.B
                 }
-                is("b0100000".U) { // XOR
+                is("b1000000000".U) { // XOR
                     io.wdata    := io.rdata1 ^ io.rdata2
                     io.rwen     := true.B
                 }
-                is("b0101000".U) { // SRL
+                is("b1010000000".U) { // SRL
                     io.wdata    := (io.rdata1 >> io.rdata2(4,0))(DATA_WIDTH-1,0)
                     io.rwen     := true.B
                 }
-                is("b0101100".U) { // SRA
+                is("b1010100000".U) { // SRA
                     io.wdata    := (io.rdata1.asSInt >> io.rdata2(4,0)).asUInt
                     io.rwen     := true.B
                 }
-                is("b0110000".U) { // OR
+                is("b1100000000".U) { // OR
                     io.wdata    := io.rdata1 | io.rdata2
                     io.rwen     := true.B
                 }
-                is("b0111000".U) { // AND
+                is("b1110000000".U) { // AND
                     io.wdata    := io.rdata1 & io.rdata2
                     io.rwen     := true.B
                 }
