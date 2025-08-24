@@ -22,6 +22,8 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   instrfet.io.clock       := clock
   instrfet.io.reset       := reset
   io.goodTrap             := decoder.io.goodTrap
+  decoder.io.rdata        := instrfet.io.rdata
+  decoder.io.valid        := alu.io.valid
   decoder.io.pc           := instrfet.io.pc
   decoder.io.instr        := instrfet.io.instr
   decoder.io.wdata        := alu.io.wdata

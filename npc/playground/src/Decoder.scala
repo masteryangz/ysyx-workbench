@@ -31,17 +31,29 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.goodTrap     := regfile.io.goodTrap
 
     switch(io.Op) {
-        is(Seq("b0010011".U, "b0000011".U)) {
+        // I-type
+        is(Seq("b0010011".U, "b0000011".U, "b1100111".U)) {
             io.imm := io.instr(DATA_WIDTH-1, 20).asSInt.pad(DATA_WIDTH).asUInt
         }
-        is(BitPat("b0?10111").value.asUInt) {
+        // U-type
+        is(Seq("b0010111".U, "b0110111".U)) {
             io.imm := (io.instr(DATA_WIDTH-1, 12).asSInt.pad(DATA_WIDTH).asUInt << 12)(DATA_WIDTH-1, 0)
         }
+        // J-type
         is("b1101111".U) {
             io.imm := Cat(io.instr(DATA_WIDTH-1), io.instr(19, 12), io.instr(20), io.instr(30, 21)).asSInt.pad(DATA_WIDTH).asUInt << 1
         }
+        // S-type
         is("b0100011".U) {
             io.imm := Cat(io.instr(DATA_WIDTH-1, 25), io.instr(11, 7)).asSInt.pad(DATA_WIDTH).asUInt
+        }
+        // R-type
+        is("b0110011".U) {
+            io.imm := 0.U
+        }
+        // B-type
+        is("b1100011".U) {
+            io.imm := Cat(io.instr(DATA_WIDTH-1), io.instr(7), io.instr(30, 25), io.instr(11, 8)).asSInt.pad(DATA_WIDTH).asUInt << 1
         }
     }
 }
