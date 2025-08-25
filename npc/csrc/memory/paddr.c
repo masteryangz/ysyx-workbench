@@ -30,6 +30,10 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 word_t pmem_read(paddr_t addr) {
   //Log("addr = %08x", addr);
   word_t ret = host_read(guest_to_host(addr & ~0x3u), 4);
+#ifdef CONFIG_MTRACE
+    Mtrace("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
+      cpu.pc, addr, ret, 4);
+#endif
   //Log("ret = %" PRIX32 "\n", ret);
   //Log("CONFIG_MBASE = %08x", CONFIG_MBASE);
   return ret;
@@ -43,6 +47,10 @@ void pmem_write(paddr_t addr, word_t data, char wmask) {
     }
   }
   host_write(guest_to_host(addr & ~0x3u), 4, wdata);
+#ifdef CONFIG_MTRACE
+  Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
+  cpu.pc, addr, data, 4);
+#endif
 }
 
 static void out_of_bound(paddr_t addr) {
@@ -61,10 +69,12 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) {
+/*
 #ifdef CONFIG_MTRACE
     Mtrace("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
       cpu.pc, addr, pmem_read(addr), len);
 #endif
+*/
     //Log("addr = %08x", addr);
     return pmem_read(addr);
   }
@@ -96,10 +106,12 @@ void paddr_write(paddr_t addr, int len, word_t data) {
       wmask = 0b1111;
       break;
   }
+/*
 #ifdef CONFIG_MTRACE
   Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
   cpu.pc, addr, data, len);
 #endif
+*/
   if (likely(in_pmem(addr))) { pmem_write(addr, data, wmask); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);

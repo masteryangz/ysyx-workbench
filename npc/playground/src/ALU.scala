@@ -94,9 +94,9 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
         // S-type
         is("b0100011".U) {
             io.addr         := adder1.io.result
-            adder1.io.add1  := io.rdata1
+            adder1.io.add1  := io.rdata2
             adder1.io.add2  := io.imm
-            io.wdata        := io.rdata2
+            io.wdata        := io.rdata1
             io.valid        := true.B
             io.mwen         := true.B
         }
