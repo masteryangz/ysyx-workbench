@@ -43,9 +43,10 @@ void pmem_write(paddr_t addr, word_t data, char wmask) {
   word_t wdata = 0;
   for (int i = 0; i < 4; i++) {
     if (wmask & (1 << i)) {
-      wdata = wdata & (data & (0xFF << (8 * i)));
+      wdata = wdata | (data & (0xFF << (8 * i)));
     }
   }
+  //Log("wdata = %08x, wmask = %d", wdata, wmask);
   host_write(guest_to_host(addr & ~0x3u), 4, wdata);
 #ifdef CONFIG_MTRACE
   Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",

@@ -21,7 +21,12 @@ module IF #(
 
     reg [DATA_WIDTH-1:0] pcReg = 32'h80000000;
     //reg [DATA_WIDTH-1:0] rdata;
-
+/*
+    initial begin
+        $monitor("pc = %08x, instr = %08x, is_jump = %d", pcReg, instr, is_jump);
+        //$monitor("addr = %08x, wdata = %08x, rdata = %08x, wen = %d, valid = %d", addr, wdata, rdata, wen, valid);
+    end
+*/
     always @(posedge clock) begin
         if (reset) begin
             pcReg   <= 32'h80000000;
@@ -32,7 +37,9 @@ module IF #(
         end
     end
     assign instr = pmem_read(pcReg);
+    
     always @(*) begin
+        //$display("valid = %d, wen = %d, addr = %08x", valid, wen, addr);
         if (valid) begin // 有读写请求时
             rdata = pmem_read(addr);
             if (wen) begin // 有写请求时

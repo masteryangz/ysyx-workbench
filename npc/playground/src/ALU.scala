@@ -43,6 +43,18 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
                     io.wdata    := (io.rdata1 < io.imm).asUInt
                     io.rwen     := true.B
                 }
+                is("b101".U) { // SRLI, SRAI
+                    switch(io.funct7) {
+                        is("b0000000".U) { // SRLI
+                            io.wdata    := (io.rdata1 >> io.imm(4,0))(DATA_WIDTH-1,0)
+                            io.rwen     := true.B
+                        }
+                        is("b0100000".U) { // SRAI
+                            io.wdata    := (io.rdata1.asSInt >> io.imm(4,0)).asUInt
+                            io.rwen     := true.B
+                        }
+                    }
+                }
                 is("b100".U) { // XORI
                     io.wdata    := io.rdata1 ^ io.imm
                     io.rwen     := true.B
@@ -94,19 +106,51 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
         // S-type
         is("b0100011".U) {
             io.addr         := adder1.io.result
-            adder1.io.add1  := io.rdata2
+            adder1.io.add1  := io.rdata1
             adder1.io.add2  := io.imm
-            io.wdata        := io.rdata1
+            io.wdata        := io.rdata2
             io.valid        := true.B
             io.mwen         := true.B
         }
         // L
         is("b0000011".U) {
-            io.addr         := adder1.io.result
-            adder1.io.add1  := io.rdata1
-            adder1.io.add2  := io.imm
-            io.valid        := true.B
-            io.rwen         := true.B
+            switch(io.funct3) {
+                is("b000".U) { // LB
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    io.valid        := true.B
+                    io.rwen         := true.B
+                }
+                is("b001".U) { // LH
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    io.valid        := true.B
+                    io.rwen         := true.B
+                }
+                is("b010".U) { // LW
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    io.valid        := true.B
+                    io.rwen         := true.B
+                }
+                is("b100".U) { // LBU
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    io.valid        := true.B
+                    io.rwen         := true.B
+                }
+                is("b101".U) { // LHU
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    io.valid        := true.B
+                    io.rwen         := true.B
+                }
+            }
         }
         // B-type
         is("b1100011".U) {
