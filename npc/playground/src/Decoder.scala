@@ -13,12 +13,13 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 
 
     val regfile = Module(new RegFile())
+    val result  = RegInit(0.U(DATA_WIDTH.W))
 
     // Connect RegFile
     regfile.io.rs1      := rs1
     regfile.io.rs2      := rs2
     regfile.io.rd       := rd
-    regfile.io.wdata    := Mux(io.valid, io.rdata, io.wdata)
+    regfile.io.wdata    := Mux(io.valid, io.result, io.wdata)
     regfile.io.wen      := io.rwen
     regfile.io.pc       := io.pc
 
@@ -30,6 +31,12 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.funct7       := io.instr(31, 25)
     io.imm          := 0.U
     io.goodTrap     := regfile.io.goodTrap
+
+    switch(io.funct3) {
+        is("b000".U) {
+            result := 
+        }
+    }
 
     switch(io.Op) {
         // I-type
