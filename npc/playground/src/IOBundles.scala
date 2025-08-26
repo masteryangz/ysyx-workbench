@@ -34,6 +34,7 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val instr           = Input(UInt(DATA_WIDTH.W))
     val wdata           = Input(UInt(DATA_WIDTH.W))
     val rdata           = Input(UInt(DATA_WIDTH.W))
+    val raddr           = Input(UInt(DATA_WIDTH.W))
     val rwen            = Input(Bool())
     val valid           = Input(Bool())
     val rdata1          = Output(UInt(DATA_WIDTH.W))

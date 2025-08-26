@@ -13,7 +13,8 @@ module IF #(
     input   [DATA_WIDTH-1:0] target,
     output  [DATA_WIDTH-1:0] pc,     // program counter
     output  [DATA_WIDTH-1:0] instr,  // fetched instruction
-    output  reg [DATA_WIDTH-1:0] rdata
+    output  reg [DATA_WIDTH-1:0] rdata,
+    output  [DATA_WIDTH-1:0] raddr
 );
 
     import "DPI-C" context function int unsigned pmem_read(input int unsigned addr);
@@ -30,18 +31,17 @@ module IF #(
     always @(posedge clock) begin
         if (reset) begin
             pcReg   <= 32'h80000000;
-            //instr   <= pmem_read(32'h80000000);
         end else begin
             pcReg   <= is_jump ? target : (pcReg + pcInc);
-            //instr   <= pmem_read(pcReg); // Convert byte address to word address
         end
     end
     assign instr = pmem_read(pcReg);
-    
+    assign raddr = addr;
     always @(*) begin
         //$display("valid = %d, wen = %d, addr = %08x", valid, wen, addr);
         if (valid) begin // 有读写请求时
             rdata = pmem_read(addr);
+            //$display("addr = %08x, rdata = %08x, instr = %08x", addr, rdata, instr);
             if (wen) begin // 有写请求时
                 pmem_write(addr, wdata, 4'b1111);
             end
