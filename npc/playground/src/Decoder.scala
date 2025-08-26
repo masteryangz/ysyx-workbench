@@ -35,24 +35,26 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     // Byte / halfword selection
     val byteShifted  = (io.rdata >> (io.raddr(1,0) << 3)).asUInt  // pick byte
     val halfShifted  = (io.rdata >> (io.raddr(1)   << 4)).asUInt  // pick halfword
-    val byteSelected = byteShifted(7,0)
-    val halfSelected = halfShifted(15,0)
+    val wbyteSelected = byteShifted(7,0)
+    val whalfSelected = halfShifted(15,0)
+    val lbyteSelected = io.rdata(7,0)
+    val lhalfSelected = io.rdata(15,0)
 
     switch(io.funct3) {
         is("b000".U) { // LB
-            result := Cat(Fill(24, byteSelected(7)), byteSelected)
+            result := Cat(Fill(24, lbyteSelected(7)), lbyteSelected)
         }
         is("b001".U) { // LH
-            result := Cat(Fill(16, halfSelected(15)), halfSelected)
+            result := Cat(Fill(16, lhalfSelected(15)), lhalfSelected)
         }
         is("b010".U) { // LW
             result := io.rdata
         }
         is("b100".U) { // LBU
-            result := Cat(0.U(24.W), byteSelected)
+            result := Cat(0.U(24.W), lbyteSelected)
         }
         is("b101".U) { // LHU
-            result := Cat(0.U(16.W), halfSelected)
+            result := Cat(0.U(16.W), lhalfSelected)
         }
     }
 

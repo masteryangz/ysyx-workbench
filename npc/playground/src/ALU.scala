@@ -105,12 +105,32 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
         }
         // S-type
         is("b0100011".U) {
-            io.addr         := adder1.io.result
-            adder1.io.add1  := io.rdata1
-            adder1.io.add2  := io.imm
-            io.wdata        := io.rdata2
-            io.valid        := true.B
-            io.mwen         := true.B
+            switch(io.funct3) {
+                is("b000".U) { // SB
+                    io.mwen         := true.B
+                    io.valid        := true.B
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    //io.wdata        := Cat(Fill(24, io.rdata2(7)), io.rdata2(7,0))
+                }
+                is("b001".U) { // SH
+                    io.mwen         := true.B
+                    io.valid        := true.B
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    //io.wdata        := Cat(Fill(16, io.rdata2(15)), io.rdata2(15,0))
+                }
+                is("b010".U) { // SW
+                    io.addr         := adder1.io.result
+                    adder1.io.add1  := io.rdata1
+                    adder1.io.add2  := io.imm
+                    io.wdata        := io.rdata2
+                    io.valid        := true.B
+                    io.mwen         := true.B
+                }
+            }
         }
         // L
         is("b0000011".U) {
