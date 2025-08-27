@@ -13,7 +13,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 
 
     val regfile = Module(new RegFile())
-    val result = WireDefault(0.U(DATA_WIDTH.W))   // ✅ wire with default value 0
+    val result = WireDefault(0.U(DATA_WIDTH.W))
 
     // Connect RegFile
     regfile.io.rs1      := rs1
@@ -35,26 +35,28 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     // Byte / halfword selection
     val byteShifted  = (io.rdata >> (io.raddr(1,0) << 3)).asUInt  // pick byte
     val halfShifted  = (io.rdata >> (io.raddr(1)   << 4)).asUInt  // pick halfword
-    val wbyteSelected = byteShifted(7,0)
-    val whalfSelected = halfShifted(15,0)
-    val lbyteSelected = io.rdata(7,0)
-    val lhalfSelected = io.rdata(15,0)
+    val byteSelected = byteShifted(7,0)
+    val halfSelected = halfShifted(15,0)
+    //val wbyteSelected = byteShifted(7,0)
+    //val whalfSelected = halfShifted(15,0)
+    //val lbyteSelected = io.rdata(7,0)
+    //val lhalfSelected = io.rdata(15,0)
 
     switch(io.funct3) {
         is("b000".U) { // LB
-            result := Cat(Fill(24, lbyteSelected(7)), lbyteSelected)
+            result := Cat(Fill(24, byteSelected(7)), byteSelected)
         }
         is("b001".U) { // LH
-            result := Cat(Fill(16, lhalfSelected(15)), lhalfSelected)
+            result := Cat(Fill(16, halfSelected(15)), halfSelected)
         }
         is("b010".U) { // LW
             result := io.rdata
         }
         is("b100".U) { // LBU
-            result := Cat(0.U(24.W), lbyteSelected)
+            result := Cat(0.U(24.W), byteSelected)
         }
         is("b101".U) { // LHU
-            result := Cat(0.U(16.W), lhalfSelected)
+            result := Cat(0.U(16.W), halfSelected)
         }
     }
 
