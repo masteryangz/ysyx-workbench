@@ -15,6 +15,7 @@ class IFIO(pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bundle {
     val wen         = Input(Bool())
     val clock       = Input(Clock())
     val reset       = Input(Bool())
+    val wmask       = Input(UInt(4.W))
 }
 
 class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
@@ -43,7 +44,8 @@ class DecoderIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val imm             = Output(UInt(DATA_WIDTH.W))
     val funct3          = Output(UInt(3.W))
     val funct7          = Output(UInt(7.W))
-    val goodTrap        = Output(Bool()) 
+    val goodTrap        = Output(Bool())
+    val wmask           = Output(UInt(4.W))
 }
 
 class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {

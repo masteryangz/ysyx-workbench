@@ -30,6 +30,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.funct3       := io.instr(14, 12)
     io.funct7       := io.instr(31, 25)
     io.imm          := 0.U
+    io.wmask        := 0.U
     io.goodTrap     := regfile.io.goodTrap
 
     // Byte / halfword selection
@@ -37,20 +38,21 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     val halfShifted  = (io.rdata >> (io.raddr(1)   << 4)).asUInt  // pick halfword
     val byteSelected = byteShifted(7,0)
     val halfSelected = halfShifted(15,0)
-    //val wbyteSelected = byteShifted(7,0)
-    //val whalfSelected = halfShifted(15,0)
-    //val lbyteSelected = io.rdata(7,0)
-    //val lhalfSelected = io.rdata(15,0)
+    //val byteSelected = io.rdata(7,0)
+    //val halfSelected = io.rdata(15,0)
 
     switch(io.funct3) {
-        is("b000".U) { // LB
+        is("b000".U) { // LB, SB
             result := Cat(Fill(24, byteSelected(7)), byteSelected)
+            io.wmask  := "b0001".U
         }
-        is("b001".U) { // LH
+        is("b001".U) { // LH, SH
             result := Cat(Fill(16, halfSelected(15)), halfSelected)
+            io.wmask  := "b0011".U
         }
-        is("b010".U) { // LW
+        is("b010".U) { // LW, SW
             result := io.rdata
+            io.wmask  := "b1111".U
         }
         is("b100".U) { // LBU
             result := Cat(0.U(24.W), byteSelected)

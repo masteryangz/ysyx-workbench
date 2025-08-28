@@ -55,6 +55,10 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
                         }
                     }
                 }
+                is("b001".U) { // SLLI
+                    io.wdata    := (io.rdata1 << io.imm(4,0))(DATA_WIDTH-1,0)
+                    io.rwen     := true.B
+                }
                 is("b100".U) { // XORI
                     io.wdata    := io.rdata1 ^ io.imm
                     io.rwen     := true.B
@@ -271,6 +275,50 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
                 }
                 is("b1110000000".U) { // AND
                     io.wdata    := io.rdata1 & io.rdata2
+                    io.rwen     := true.B
+                }
+                is("b0000001000".U) { // MUL
+                    io.wdata    := (io.rdata1.asSInt * io.rdata2.asSInt)(DATA_WIDTH-1,0).asUInt
+                    io.rwen     := true.B
+                }
+                is("b0000001001".U) { // MULH
+                    io.wdata    := (io.rdata1.asSInt * io.rdata2.asSInt)(2*DATA_WIDTH-1,DATA_WIDTH).asUInt
+                    io.rwen     := true.B
+                }
+                is("b0000001100".U) { // DIV
+                    when(io.rdata2 === 0.U) {
+                        io.wdata := (-1).S(DATA_WIDTH.W).asUInt
+                    } .elsewhen(io.rdata1 === (-1).S(DATA_WIDTH.W).asUInt && io.rdata2 === (-1).S(DATA_WIDTH.W).asUInt) {
+                        io.wdata := io.rdata1
+                    } .otherwise {
+                        io.wdata := (io.rdata1.asSInt / io.rdata2.asSInt).asUInt
+                    }
+                    io.rwen     := true.B
+                }
+                is("b0000001101".U) { // DIVU
+                    when(io.rdata2 === 0.U) {
+                        io.wdata := (-1).S(DATA_WIDTH.W).asUInt
+                    } .otherwise {
+                        io.wdata := (io.rdata1.asUInt / io.rdata2.asUInt).asUInt
+                    }
+                    io.rwen     := true.B
+                }
+                is("b0000001110".U) { // REM
+                    when(io.rdata2 === 0.U) {
+                        io.wdata := io.rdata1
+                    } .elsewhen(io.rdata1 === (-1).S(DATA_WIDTH.W).asUInt && io.rdata2 === (-1).S(DATA_WIDTH.W).asUInt) {
+                        io.wdata := 0.U
+                    } .otherwise {
+                        io.wdata := (io.rdata1.asSInt % io.rdata2.asSInt).asUInt
+                    }
+                    io.rwen     := true.B
+                }
+                is("b0000001111".U) { // REMU
+                    when(io.rdata2 === 0.U) {
+                        io.wdata := io.rdata1
+                    } .otherwise {
+                        io.wdata := (io.rdata1.asUInt % io.rdata2.asUInt).asUInt
+                    }
                     io.rwen     := true.B
                 }
             }

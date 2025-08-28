@@ -42,6 +42,7 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   instrfet.io.wen         := alu.io.mwen
   instrfet.io.addr        := alu.io.addr
   instrfet.io.wdata       := alu.io.wdata
+  instrfet.io.wmask       := decoder.io.wmask
   dpiEnd.io.trap          := trapPulse
 
 

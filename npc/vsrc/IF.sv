@@ -11,6 +11,7 @@ module IF #(
     input   [DATA_WIDTH-1:0] addr,
     input   [DATA_WIDTH-1:0] wdata,
     input   [DATA_WIDTH-1:0] target,
+    input   [3:0] wmask,
     output  [DATA_WIDTH-1:0] pc,     // program counter
     output  [DATA_WIDTH-1:0] instr,  // fetched instruction
     output  reg [DATA_WIDTH-1:0] rdata,
@@ -43,7 +44,7 @@ module IF #(
             rdata = pmem_read(addr);
             //$display("addr = %08x, rdata = %08x, instr = %08x", addr, rdata, instr);
             if (wen) begin // 有写请求时
-                pmem_write(addr, wdata, 4'b1111);
+                pmem_write(addr, wdata, wmask);
             end
         end
         else begin

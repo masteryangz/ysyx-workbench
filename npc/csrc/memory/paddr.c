@@ -30,6 +30,7 @@ paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 word_t pmem_read(paddr_t addr) {
   //Log("addr = %08x", addr);
   word_t ret = host_read(guest_to_host(addr & ~0x3u), 4);
+  //word_t ret = host_read(guest_to_host(addr), 4);
 #ifdef CONFIG_MTRACE
     Mtrace("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
       cpu.pc, addr, ret, 4);
@@ -41,16 +42,21 @@ word_t pmem_read(paddr_t addr) {
 
 void pmem_write(paddr_t addr, word_t data, char wmask) {
   word_t wdata = 0;
+  int len;
+  if (wmask == 0b1111) len = 4;
+  else if (wmask == 0b11) len = 2;
+  else len = 1;
   for (int i = 0; i < 4; i++) {
     if (wmask & (1 << i)) {
       wdata = wdata | (data & (0xFF << (8 * i)));
     }
   }
   //Log("wdata = %08x, wmask = %d", wdata, wmask);
-  host_write(guest_to_host(addr & ~0x3u), 4, wdata);
+  //host_write(guest_to_host(addr & ~0x3u), len, wdata);
+  host_write(guest_to_host(addr), len, wdata);
 #ifdef CONFIG_MTRACE
   Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
-  cpu.pc, addr, data, 4);
+  cpu.pc, addr, data, len);
 #endif
 }
 

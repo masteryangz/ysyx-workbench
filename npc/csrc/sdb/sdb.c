@@ -219,9 +219,11 @@ static int cmd_x(char *args) {
     }
     //word_t data = vaddr_read(result + i * 4);
     word_t data = pmem_read(result + i * 4); // Read memory at the calculated address
-    printf("%s + %d word_t: %08x\n", ex_token, i, data);
+    //printf("%s + %d word_t: %08x\n", ex_token, i, data);
+    printf("%08x ", data);
+    
   }
-
+  printf("\n");
   return 0;
 }
 
