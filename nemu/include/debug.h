@@ -32,6 +32,10 @@
     _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_MAGENTA) "\n", \
         __FILE__, __LINE__, __func__, ## __VA_ARGS__)
 
+#define Dtrace(format, ...) \
+    _Log(ANSI_FMT("[%s:%d %s] " format, ANSI_FG_CYAN) "\n", \
+        __FILE__, __LINE__, __func__, ## __VA_ARGS__)
+
 #define Assert(cond, format, ...) \
   do { \
     if (!(cond)) { \

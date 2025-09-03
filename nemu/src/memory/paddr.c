@@ -62,14 +62,7 @@ word_t paddr_read(paddr_t addr, int len) {
 #endif
     return pmem_read(addr, len);
   }
-#ifdef CONFIG_DEVICE
-#ifdef CONFIG_MTRACE
-  Mtrace("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
-    cpu.pc, addr, mmio_read(addr, len), len);
-#endif
-  return mmio_read(addr, len);
-#endif
-  //IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
 }

@@ -55,6 +55,10 @@ void init_map() {
 word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
+#ifdef DTRACE
+  Dtrace("[dtrace] MAP READ at 0x%08x from %s: addr=0x%08x width=%d\n",
+    cpu.pc, map->name, addr, len);
+#endif
   paddr_t offset = addr - map->low;
   invoke_callback(map->callback, offset, len, false); // prepare data to read
   word_t ret = host_read(map->space + offset, len);
@@ -64,6 +68,10 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
 void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
+#ifdef DTRACE
+  Dtrace("[dtrace] MAP WRITE at 0x%08x to %s: addr=0x%08x data=0x%08x width=%d\n",
+    cpu.pc, map->name, addr, data, len);
+#endif
   paddr_t offset = addr - map->low;
   host_write(map->space + offset, len, data);
   invoke_callback(map->callback, offset, len, true);
