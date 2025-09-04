@@ -31,6 +31,19 @@ static int vsnprintf_internal(char *out, size_t size, const char *fmt, va_list a
 			while (*b) *p++ = *b++;
 			break;
 		}
+    case 'x': {
+      unsigned val = va_arg(args, unsigned);
+      char buf[20];
+      char *b = buf + sizeof(buf) - 1;
+      *b = '\0';
+      do {
+        unsigned digit = val % 16;
+        *--b = (digit < 10) ? ('0' + digit) : ('a' + digit - 10);
+        val /= 16;
+      } while (val);
+      while (*b) *p++ = *b++;
+      break;
+    }
 		case 's': {
 			const char *str = va_arg(args, const char *);
 			while (*str) *p++ = *str++;

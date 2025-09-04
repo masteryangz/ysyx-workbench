@@ -55,7 +55,7 @@ void init_map() {
 word_t map_read(paddr_t addr, int len, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
-#ifdef DTRACE
+#ifdef CONFIG_DTRACE
   Dtrace("[dtrace] MAP READ at 0x%08x from %s: addr=0x%08x width=%d\n",
     cpu.pc, map->name, addr, len);
 #endif
@@ -68,7 +68,7 @@ word_t map_read(paddr_t addr, int len, IOMap *map) {
 void map_write(paddr_t addr, int len, word_t data, IOMap *map) {
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
-#ifdef DTRACE
+#ifdef CONFIG_DTRACE
   Dtrace("[dtrace] MAP WRITE at 0x%08x to %s: addr=0x%08x data=0x%08x width=%d\n",
     cpu.pc, map->name, addr, data, len);
 #endif

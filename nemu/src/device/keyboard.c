@@ -97,4 +97,7 @@ void init_i8042() {
   add_mmio_map("keyboard", CONFIG_I8042_DATA_MMIO, i8042_data_port_base, 4, i8042_data_io_handler);
 #endif
   IFNDEF(CONFIG_TARGET_AM, init_keymap());
+#ifdef CONFIG_TARGET_AM
+  Log("keyboard device initialized @ 0x%08x (MMIO)", CONFIG_I8042_DATA_MMIO);
+#endif
 }
