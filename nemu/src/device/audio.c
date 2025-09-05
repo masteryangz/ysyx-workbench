@@ -27,8 +27,54 @@ enum {
   nr_reg
 };
 
+#define AUDIO_CTL_SIZE 24   // 6 * 4 bytes
+#define SBUF_SIZE (64 * 1024) // 64KB
+
 static uint8_t *sbuf = NULL;
 static uint32_t *audio_base = NULL;
+static uint32_t sbuf_head = 0; // read index
+static uint32_t sbuf_tail = 0; // write index
+static SDL_AudioDeviceID dev = 0;
+static SDL_AudioSpec want;
+
+static SDL_mutex *audio_mutex = NULL;
+
+static inline uint32_t sbuf_used() {
+  if (sbuf_tail >= sbuf_head) return sbuf_tail - sbuf_head;
+  return SBUF_SIZE - (sbuf_head - sbuf_tail);
+}
+
+static inline uint32_t sbuf_free() {
+  return SBUF_SIZE - sbuf_used() - 1; // leave one byte free to distinguish full/empty
+}
+
+// SDL audio callback, called in SDL audio thread
+static void audio_callback(void *userdata, Uint8 *stream, int len) {
+  SDL_LockMutex(audio_mutex);
+  int to_read = len;
+  int outpos = 0;
+  while (to_read > 0) {
+    uint32_t used = sbuf_used();
+    if (used == 0) {
+      // 缓冲区空，填 0 (静音)
+      memset(stream + outpos, 0, to_read);
+      outpos += to_read;
+      to_read = 0;
+      break;
+    }
+    uint32_t chunk = used;
+    if (sbuf_tail > sbuf_head) chunk = sbuf_tail - sbuf_head;
+    // chunk 是连续可读大小
+    uint32_t take = chunk < (uint32_t)to_read ? chunk : (uint32_t)to_read;
+    memcpy(stream + outpos, sbuf + sbuf_head, take);
+    sbuf_head = (sbuf_head + take) % SBUF_SIZE;
+    outpos += take;
+    to_read -= take;
+  }
+  // 更新 regs[5] = count (已使用字节数)
+  audio_regs[5] = sbuf_used();
+  SDL_UnlockMutex(audio_mutex);
+}
 
 static void audio_io_handler(uint32_t offset, int len, bool is_write) {
 }
