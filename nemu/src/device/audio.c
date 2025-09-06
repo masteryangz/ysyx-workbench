@@ -27,56 +27,66 @@ enum {
   nr_reg
 };
 
-#define AUDIO_CTL_SIZE 24   // 6 * 4 bytes
-#define SBUF_SIZE (64 * 1024) // 64KB
-
 static uint8_t *sbuf = NULL;
 static uint32_t *audio_base = NULL;
-static uint32_t sbuf_head = 0; // read index
-static uint32_t sbuf_tail = 0; // write index
-static SDL_AudioDeviceID dev = 0;
-static SDL_AudioSpec want;
 
-static SDL_mutex *audio_mutex = NULL;
+static uint32_t sbuf_size = CONFIG_SB_SIZE;
+static uint32_t count = 0;   // 已用大小
+static uint32_t head = 0;    // 读指针
+//static uint32_t tail = 0;    // 写指针
 
-static inline uint32_t sbuf_used() {
-  if (sbuf_tail >= sbuf_head) return sbuf_tail - sbuf_head;
-  return SBUF_SIZE - (sbuf_head - sbuf_tail);
-}
+static uint32_t freq, channels, samples;
 
-static inline uint32_t sbuf_free() {
-  return SBUF_SIZE - sbuf_used() - 1; // leave one byte free to distinguish full/empty
-}
-
-// SDL audio callback, called in SDL audio thread
-static void audio_callback(void *userdata, Uint8 *stream, int len) {
-  SDL_LockMutex(audio_mutex);
-  int to_read = len;
-  int outpos = 0;
-  while (to_read > 0) {
-    uint32_t used = sbuf_used();
-    if (used == 0) {
-      // 缓冲区空，填 0 (静音)
-      memset(stream + outpos, 0, to_read);
-      outpos += to_read;
-      to_read = 0;
-      break;
+static void sdl_audio_callback(void *userdata, Uint8 *stream, int len) {
+  for (int i = 0; i < len; i++) {
+    if (count == 0) {
+      stream[i] = 0;  // 缓冲区空，输出静音
+    } else {
+      stream[i] = sbuf[head];
+      head = (head + 1) % sbuf_size;
+      count--;
     }
-    uint32_t chunk = used;
-    if (sbuf_tail > sbuf_head) chunk = sbuf_tail - sbuf_head;
-    // chunk 是连续可读大小
-    uint32_t take = chunk < (uint32_t)to_read ? chunk : (uint32_t)to_read;
-    memcpy(stream + outpos, sbuf + sbuf_head, take);
-    sbuf_head = (sbuf_head + take) % SBUF_SIZE;
-    outpos += take;
-    to_read -= take;
   }
-  // 更新 regs[5] = count (已使用字节数)
-  audio_regs[5] = sbuf_used();
-  SDL_UnlockMutex(audio_mutex);
 }
 
 static void audio_io_handler(uint32_t offset, int len, bool is_write) {
+  Log("audio io at offset 0x%x, len = %d, is_write = %d", offset, len, is_write);
+  int index = offset / 4;
+
+  if (is_write) {
+    switch (index) {
+      case reg_freq:     freq     = audio_base[reg_freq];     break;
+      case reg_channels: channels = audio_base[reg_channels]; break;
+      case reg_samples:  samples  = audio_base[reg_samples];  break;
+      case reg_init: {
+        if (audio_base[reg_init]) {
+          SDL_AudioSpec s;
+          s.freq     = freq;
+          s.channels = channels;
+          s.samples  = samples;
+          s.format   = AUDIO_S16SYS;
+          s.callback = sdl_audio_callback;
+          s.userdata = NULL;
+          Log("audio init: freq = %d, channels = %d, samples = %d", freq, channels, samples);
+          count = 0;
+          int ret = SDL_InitSubSystem(SDL_INIT_AUDIO);
+          if (ret == 0) {
+            SDL_OpenAudio(&s, NULL);
+            Log("audio playing");
+            SDL_PauseAudio(0);
+          }
+        }
+        break;
+      }
+      default: break;
+    }
+  } else {
+    switch (index) {
+      case reg_sbuf_size: audio_base[reg_sbuf_size] = sbuf_size; break;
+      case reg_count:     audio_base[reg_count]     = count;     break;
+      default: break;
+    }
+  }
 }
 
 void init_audio() {
@@ -90,4 +100,7 @@ void init_audio() {
 
   sbuf = (uint8_t *)new_space(CONFIG_SB_SIZE);
   add_mmio_map("audio-sbuf", CONFIG_SB_ADDR, sbuf, CONFIG_SB_SIZE, NULL);
+
+  audio_base[reg_sbuf_size] = sbuf_size;
+  audio_base[reg_count]     = 0;
 }

@@ -62,6 +62,7 @@ void __am_audio_status(AM_AUDIO_STATUS_T *stat) {
 }
 
 void __am_audio_play(AM_AUDIO_PLAY_T *ctl) {
+  printf("audio play: start = %d, end = %d\n", ctl->buf.start, ctl->buf.end);
   int len = ctl->buf.end - ctl->buf.start;
   audio_write(ctl->buf.start, len);
 }
