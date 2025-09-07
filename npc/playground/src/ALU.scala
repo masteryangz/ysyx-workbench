@@ -247,12 +247,10 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
                     io.wdata    := (io.rdata1 << io.rdata2(4,0))(DATA_WIDTH-1,0)
                     io.rwen     := true.B
                 }
-                /*
                 is("b0011000".U) { // SLT
                     io.wdata    := (io.rdata1.asSInt < io.rdata2.asSInt).asUInt
                     io.rwen     := true.B
                 }
-                */
                 is("b0110000000".U) { // SLTU
                     io.wdata    := (io.rdata1 < io.rdata2).asUInt
                     io.rwen     := true.B
