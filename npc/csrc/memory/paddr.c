@@ -35,8 +35,6 @@ word_t pmem_read(paddr_t addr) {
     Mtrace("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
       cpu.pc, addr, ret, 4);
 #endif
-  //Log("ret = %" PRIX32 "\n", ret);
-  //Log("CONFIG_MBASE = %08x", CONFIG_MBASE);
   return ret;
 }
 
@@ -51,8 +49,6 @@ void pmem_write(paddr_t addr, word_t data, char wmask) {
       wdata = wdata | (data & (0xFF << (8 * i)));
     }
   }
-  //Log("wdata = %08x, wmask = %d", wdata, wmask);
-  //host_write(guest_to_host(addr & ~0x3u), len, wdata);
   host_write(guest_to_host(addr), len, wdata);
 #ifdef CONFIG_MTRACE
   Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
@@ -76,13 +72,6 @@ void init_mem() {
 
 word_t paddr_read(paddr_t addr, int len) {
   if (likely(in_pmem(addr))) {
-/*
-#ifdef CONFIG_MTRACE
-    Mtrace("[mtrace] LOAD 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
-      cpu.pc, addr, pmem_read(addr), len);
-#endif
-*/
-    //Log("addr = %08x", addr);
     return pmem_read(addr);
   }
 #ifdef CONFIG_DEVICE
@@ -113,12 +102,7 @@ void paddr_write(paddr_t addr, int len, word_t data) {
       wmask = 0b1111;
       break;
   }
-/*
-#ifdef CONFIG_MTRACE
-  Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
-  cpu.pc, addr, data, len);
-#endif
-*/
+
   if (likely(in_pmem(addr))) { pmem_write(addr, data, wmask); return; }
   IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
@@ -129,28 +113,3 @@ void print_mem(paddr_t start, paddr_t end) {
     Log("Address 0x%08x: 0x%02x %02x %02x %02x", addr, (uint8_t)pmem[addr+3], (uint8_t)pmem[addr+2], (uint8_t)pmem[addr+1], (uint8_t)pmem[addr]);
   }
 }
-
-/*
-int pmem_read(int raddr) {
-  // Always read 4 bytes aligned to the address `raddr & ~0x3u` and return to `rdata`
-  //Log("Reading memory at address: 0x%x", raddr);
-  //vaddr_t addr = (raddr - 0x80000000)>>2 & ~0x3u; // align to 4 bytes
-  vaddr_t addr = (raddr - 0x80000000)>>2;
-  //Log("raddr: 0x%x", raddr);
-  //Log("(raddr - 0x80000000)>>2: 0x%x", (raddr - 0x80000000)>>2);
-  //Log("addr: 0x%x", addr);
-  return mem[addr]; // Return the read data
-}
-
-void pmem_write(int waddr, int wdata, char wmask) {
-  // Always write `wdata` according to the write mask `wmask` into 4 bytes aligned to the address `waddr & ~0x3u`
-  // Each bit in `wmask` represents a mask for 1 byte in `wdata`
-  // For example, `wmask = 0x3` means only write the lowest 2 bytes, leaving the other bytes in memory unchanged
-  vaddr_t addr = waddr & ~0x3u; // align to 4 bytes
-  for (int i = 0; i < 4; i++) {
-    if (wmask & (1 << i)) {
-      mem[addr] = (wdata >> (i * 8)) & 0xFF;
-    }
-  }
-}
-*/

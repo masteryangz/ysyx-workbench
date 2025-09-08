@@ -24,7 +24,7 @@ static void decode_operand(Decode *s, int *rd, word_t *src1, word_t *src2, word_
 static int decode_exec(Decode *s) {
   //s->dnpc = s->snpc;
   //Log("s->dnpc = %08x, s->snpc = %08x", s->dnpc, s->snpc);
-  Log("Sim time: %lu", sim_time);
+  //Log("Sim time: %lu", sim_time);
   top->clock = 0; step_and_dump_wave();
   //Log("half step");
   top->clock = 1; step_and_dump_wave();

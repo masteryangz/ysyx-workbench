@@ -11,7 +11,7 @@ VTop* top;
 void engine_start();
 void init_monitor(int, char *[]);
 
-const uint64_t max_cycles = 100000;
+const uint64_t max_cycles = 1000000;
 uint64_t sim_time = 0;
 
 //extern long long int get_sv_time();

@@ -35,7 +35,7 @@ void ftrace_init(const char *elf_path) {
     }
     Elf32_Shdr sh_str = {0};
     sh_str = sh_table[ehdr.e_shstrndx];
-    char *shstrtab = malloc(sh_str.sh_size);
+    char *shstrtab = (char *)malloc(sh_str.sh_size);
     fseek(fp, sh_str.sh_offset, SEEK_SET);
     if (fread(shstrtab, sh_str.sh_size, 1, fp) != 1) { 
       perror("fread failed"); 
@@ -78,7 +78,7 @@ void ftrace_init(const char *elf_path) {
     // Read symbol table
     int sym_num = symtab.sh_size / symtab.sh_entsize;
     //Log("ftrace: sym_num = %d", sym_num);
-    Elf32_Sym *symtab_data = malloc(symtab.sh_size);
+    Elf32_Sym *symtab_data = (Elf32_Sym *)malloc(symtab.sh_size);
     fseek(fp, symtab.sh_offset, SEEK_SET);
     if (fread(symtab_data, symtab.sh_size, 1, fp) != 1) { 
       perror("fread failed"); 
@@ -90,7 +90,7 @@ void ftrace_init(const char *elf_path) {
     //fread(symtab_data, symtab.sh_size, 1, fp);
 
     // Read string table
-    char *strtab_data = malloc(strtab.sh_size);
+    char *strtab_data = (char *)malloc(strtab.sh_size);
     fseek(fp, strtab.sh_offset, SEEK_SET);
     if (fread(strtab_data, strtab.sh_size, 1, fp) != 1) { 
       perror("fread failed"); 
