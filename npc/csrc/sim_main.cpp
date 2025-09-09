@@ -4,12 +4,9 @@ VerilatedContext* contextp = nullptr;
 VerilatedFstC* tfp = nullptr;
 VTop* top;
 
-//extern "C" void set_pc_ptr(uint32_t ptr);
-//extern "C" void set_gpr_ptr();
-//extern "C" void set_instr_mem_ptr(uint64_t ptr);
-
 void engine_start();
 void init_monitor(int, char *[]);
+int is_exit_status_bad();
 
 const uint64_t max_cycles = 1000000;
 uint64_t sim_time = 0;
@@ -58,5 +55,5 @@ int main(int argc, char *argv[]) {
   delete top;
   delete tfp;
   delete contextp;
-  return 0;
+  return is_exit_status_bad();
 }

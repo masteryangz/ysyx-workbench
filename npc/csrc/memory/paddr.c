@@ -49,6 +49,14 @@ void pmem_write(paddr_t addr, word_t data, char wmask) {
       wdata = wdata | (data & (0xFF << (8 * i)));
     }
   }
+  if (addr == 0xa00003f8) {
+    char ch = (char)(wdata & 0xFF);
+    //putchar(ch);            // print to host stdout
+    //fflush(stdout);         // flush so it shows immediately
+    Log("printing to host stdout");
+    printf("%c", ch);  // print to host stderr
+    return;
+  }
   host_write(guest_to_host(addr), len, wdata);
 #ifdef CONFIG_MTRACE
   Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
