@@ -15,7 +15,7 @@
 
 #include <memory/host.h>
 #include <memory/paddr.h>
-//#include <device/mmio.h>
+#include <device/mmio.h>
 #include <isa.h>
 
 //#if   defined(CONFIG_PMEM_MALLOC)
@@ -89,7 +89,7 @@ word_t paddr_read(paddr_t addr, int len) {
 #endif
   return mmio_read(addr, len);
 #endif
-  //IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
   out_of_bound(addr);
   return 0;
 }
