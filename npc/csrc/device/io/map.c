@@ -53,6 +53,7 @@ void init_map() {
 }
 
 word_t map_read(paddr_t addr, int len, IOMap *map) {
+  Log("map_read addr = %08x, len = %d", addr, len);
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
 #ifdef CONFIG_DTRACE

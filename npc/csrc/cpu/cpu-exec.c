@@ -75,6 +75,7 @@ static void exec_once(Decode *s, vaddr_t pc) {
   //Log("nemu_state.state = %s", NEMU_STATE());
   s->pc = pc;
   s->snpc = pc;
+  //Log("fetching pc = %08x", pc);
   isa_exec_once(s);
   //Log("pc = %08x", cpu.pc);
   //Log("s->dnpc = %08x, s->snpc = %08x", s->dnpc, s->snpc);
