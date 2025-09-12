@@ -41,9 +41,11 @@ module IF #(
     always @(*) begin
         //$display("valid = %d, wen = %d, addr = %08x", valid, wen, addr);
         if (valid) begin // 有读写请求时
-            rdata = pmem_read(addr);
-            //$display("addr = %08x, rdata = %08x, instr = %08x", addr, rdata, instr);
-            if (wen) begin // 有写请求时
+            if (!wen) begin// 读请求
+                rdata = pmem_read(addr);
+                //$display("addr = %08x, rdata = %08x, instr = %08x", addr, rdata, instr);
+            end
+            else begin // 有写请求时
                 pmem_write(addr, wdata, wmask);
             end
         end

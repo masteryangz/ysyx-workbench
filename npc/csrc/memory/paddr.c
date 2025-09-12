@@ -43,12 +43,14 @@ word_t pmem_read(paddr_t addr) {
     return ret;
   }
   //Log("addr = %08x", addr);
-  IFDEF(CONFIG_DEVICE, return mmio_read(addr, 4));
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, addr & 0x3u););
+  //Log("out of bound");
   out_of_bound(addr);
   return 0;
 }
 
 void pmem_write(paddr_t addr, word_t data, char wmask) {
+  //Log("addr = %08x, data = %08x, wmask = %02x", addr, data, wmask);
   word_t wdata = 0;
   int len;
   if (wmask == 0b1111) len = 4;
@@ -67,7 +69,9 @@ void pmem_write(paddr_t addr, word_t data, char wmask) {
   Mtrace("[mtrace] STORE 0x%08x: addr=0x%08x data=0x%08x width=%d\n",
   cpu.pc, addr, data, len);
 #endif
-  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
+  //Log("addr = %08x", addr);
+  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return;);
+  //Log("out of bound");
   out_of_bound(addr);
 }
 
@@ -86,7 +90,8 @@ word_t paddr_read(paddr_t addr, int len) {
     return pmem_read(addr);
   }
   //Log("addr = %08x not in pmem", addr);
-  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len));
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, len););
+  //Log("out of bound");
   out_of_bound(addr);
   return 0;
 }
@@ -109,7 +114,8 @@ void paddr_write(paddr_t addr, int len, word_t data) {
   }
 
   if (likely(in_pmem(addr))) { pmem_write(addr, data, wmask); return; }
-  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
+  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return;);
+  //Log("out of bound");
   out_of_bound(addr);
 }
 
