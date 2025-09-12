@@ -47,13 +47,14 @@ static void invoke_callback(io_callback_t c, paddr_t offset, int len, bool is_wr
 }
 
 void init_map() {
+  //Log("initialize io space");
   io_space = (uint8_t *) malloc(IO_SPACE_MAX);
   assert(io_space);
   p_space = io_space;
 }
 
 word_t map_read(paddr_t addr, int len, IOMap *map) {
-  Log("map_read addr = %08x, len = %d", addr, len);
+  //Log("map_read addr = %08x, len = %d", addr, len);
   assert(len >= 1 && len <= 8);
   check_bound(map, addr);
 #ifdef CONFIG_DTRACE
