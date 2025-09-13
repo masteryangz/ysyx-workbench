@@ -42,8 +42,8 @@ word_t pmem_read(paddr_t addr) {
 #endif
     return ret;
   }
-  //Log("addr = %08x", addr);
-  IFDEF(CONFIG_DEVICE, return mmio_read(addr, addr & 0x3u););
+  //Log("addr = %08x, len = %d", addr, 4);
+  IFDEF(CONFIG_DEVICE, return mmio_read(addr, 4););
   //Log("out of bound");
   out_of_bound(addr);
   return 0;
@@ -89,7 +89,7 @@ word_t paddr_read(paddr_t addr, int len) {
     //Log("addr = %08x in pmem", addr);
     return pmem_read(addr);
   }
-  //Log("addr = %08x not in pmem", addr);
+  //Log("addr = %08x not in pmem, len = %d", addr, len);
   IFDEF(CONFIG_DEVICE, return mmio_read(addr, len););
   //Log("out of bound");
   out_of_bound(addr);

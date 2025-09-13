@@ -8,7 +8,7 @@ void __am_timer_uptime(AM_TIMER_UPTIME_T *uptime) {
   uint32_t lo = inl(RTC_ADDR);       // 低 32 位
   uint32_t hi = inl(RTC_ADDR + 4);   // 高 32 位
   uint64_t ms = ((uint64_t)hi << 32) | lo;  // 毫秒
-  uptime->us = ms * 1000;            // 转换成微秒，符合 AM 接口定义
+  uptime->us = ms;
   //uptime->us = 0;
 }
 

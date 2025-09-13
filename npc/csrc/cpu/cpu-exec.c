@@ -69,7 +69,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 
 static void exec_once(Decode *s, vaddr_t pc) {
   //Log("pc = %08x", pc);
-  if (sim_time >= max_cycles || contextp->gotFinish()) {
+  if (contextp->gotFinish()) {
     nemu_state.state = NEMU_END;
   }
   //Log("nemu_state.state = %s", NEMU_STATE());
