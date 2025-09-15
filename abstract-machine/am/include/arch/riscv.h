@@ -8,8 +8,10 @@
 #endif
 
 struct Context {
-  // TODO: fix the order of these members to match trap.S
-  uintptr_t mepc, mcause, gpr[NR_REGS], mstatus;
+  uintptr_t gpr[NR_REGS];  // 先保存的所有寄存器（除了x0）
+  uintptr_t mcause;        // OFFSET_CAUSE
+  uintptr_t mstatus;       // OFFSET_STATUS
+  uintptr_t mepc;          // OFFSET_EPC
   void *pdir;
 };
 

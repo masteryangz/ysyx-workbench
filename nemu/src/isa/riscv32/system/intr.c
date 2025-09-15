@@ -20,16 +20,16 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
    * Then return the address of the interrupt/exception vector.
    */
   // 保存异常返回地址
-  cpu.csr.mepc = epc;
+  cpu.mepc = epc;
 
   // 保存异常号（mcause）
-  cpu.csr.mcause = NO;
+  cpu.mcause = NO;
 
   // 目前我们不实现 mstatus 的复杂位，只要能跑通 yield 即可
   // 在真正的 RISC-V 中，还需要修改 MPIE、MIE 等位，但这里忽略
 
   // 返回 trap 入口地址 (mtvec)
-  return cpu.csr.mtvec;
+  return cpu.mtvec;
 }
 
 word_t isa_query_intr() {
