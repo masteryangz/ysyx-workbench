@@ -173,8 +173,22 @@ static int decode_exec(Decode *s) {
   INSTPAT("0000000 00001 00000 000 00000 11100 11", ebreak , N, NEMUTRAP(s->pc, R(10))); // R(10) is $a0
   INSTPAT("0000000 00000 00000 000 00000 11100 11", ecall  , N, s->dnpc = isa_raise_intr(EVENT_YIELD, s->pc);); 
   INSTPAT("??????? ????? ????? 001 ????? 11100 11", csrrw  , I, 
-    if (rd != 0) R(rd) = cpu.mstatus; 
-    cpu.mstatus = src1; 
+    if (rd != 0) {
+      switch (imm) {
+        case 0x300: R(rd) = cpu.mstatus; break;
+        case 0x305: R(rd) = cpu.mtvec; break;
+        case 0x341: R(rd) = cpu.mepc; break;
+        case 0x342: R(rd) = cpu.mcause; break;
+        default: panic("csrrw with unimplemented CSR address = 0x%x", imm);
+      }
+    }
+    switch (imm) {
+      case 0x300: cpu.mstatus = src1; break;
+      case 0x305: cpu.mtvec = src1; break;
+      case 0x341: cpu.mepc = src1; break;
+      case 0x342: cpu.mcause = src1; break;
+      default: panic("csrrw with unimplemented CSR address = 0x%x", imm);
+    }
   );
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();
