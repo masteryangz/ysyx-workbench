@@ -24,6 +24,12 @@
 #define Mw vaddr_write
 
 enum {
+  EVENT_NULL = 0,
+  EVENT_YIELD, EVENT_SYSCALL, EVENT_PAGEFAULT, EVENT_ERROR,
+  EVENT_IRQ_TIMER, EVENT_IRQ_IODEV,
+} event;
+
+enum {
   TYPE_I, TYPE_U, TYPE_S, TYPE_J, TYPE_R, TYPE_B,
   TYPE_N, // none
 };
@@ -188,6 +194,42 @@ static int decode_exec(Decode *s) {
       case 0x341: cpu.mepc = src1; break;
       case 0x342: cpu.mcause = src1; break;
       default: panic("csrrw with unimplemented CSR address = 0x%x", imm);
+    }
+  );
+  INSTPAT("??????? ????? ????? 010 ????? 11100 11", csrrs  , I, 
+    if (rd != 0) {
+      switch (imm) {
+        case 0x300: R(rd) = cpu.mstatus; break;
+        case 0x305: R(rd) = cpu.mtvec; break;
+        case 0x341: R(rd) = cpu.mepc; break;
+        case 0x342: R(rd) = cpu.mcause; break;
+        default: panic("csrrs with unimplemented CSR address = 0x%x", imm);
+      }
+    }
+    switch (imm) {
+      case 0x300: cpu.mstatus |= src1; break;
+      case 0x305: cpu.mtvec   |= src1; break;
+      case 0x341: cpu.mepc    |= src1; break;
+      case 0x342: cpu.mcause  |= src1; break;
+      default: panic("csrrs with unimplemented CSR address = 0x%x", imm);
+    }
+  );
+  INSTPAT("??????? ????? ????? 011 ????? 11100 11", csrrc  , I, 
+    if (rd != 0) {
+      switch (imm) {
+        case 0x300: R(rd) = cpu.mstatus; break;
+        case 0x305: R(rd) = cpu.mtvec; break;
+        case 0x341: R(rd) = cpu.mepc; break;
+        case 0x342: R(rd) = cpu.mcause; break;
+        default: panic("csrrc with unimplemented CSR address = 0x%x", imm);
+      }
+    }
+    switch (imm) {
+      case 0x300: cpu.mstatus &= ~src1; break;
+      case 0x305: cpu.mtvec   &= ~src1; break;
+      case 0x341: cpu.mepc    &= ~src1; break;
+      case 0x342: cpu.mcause  &= ~src1; break;
+      default: panic("csrrc with unimplemented CSR address = 0x%x", imm);
     }
   );
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
