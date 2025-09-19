@@ -232,6 +232,7 @@ static int decode_exec(Decode *s) {
       default: panic("csrrc with unimplemented CSR address = 0x%x", imm);
     }
   );
+  INSTPAT("0011000 00010 00000 000 00000 11100 11", mret   , N, s->dnpc = cpu.mepc;);
   INSTPAT("??????? ????? ????? ??? ????? ????? ??", inv    , N, INV(s->pc));
   INSTPAT_END();
 
