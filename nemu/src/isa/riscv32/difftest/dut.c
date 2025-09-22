@@ -22,6 +22,7 @@ bool isa_difftest_checkregs(CPU_state *ref_r, vaddr_t pc) {
     //Log("ref reg %s: 0x%08x", reg_name(i), ref_r->gpr[i]);
     //Log("dut reg %s: 0x%08x", reg_name(i), cpu.gpr[i]);
     if (cpu.gpr[i] != ref_r->gpr[i]) {
+      //Log("difftest failed at pc = 0x%08x, reg %s: ref 0x%08x, dut 0x%08x", pc, reg_name(i), ref_r->gpr[i], cpu.gpr[i]);
       return false;
     }
   }

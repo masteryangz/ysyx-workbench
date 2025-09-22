@@ -10,12 +10,18 @@ Context* __am_irq_handle(Context *c) {
     switch (c->mcause) {
       case EVENT_IRQ_TIMER: ev.event = EVENT_IRQ_TIMER; break;
       case EVENT_IRQ_IODEV: ev.event = EVENT_IRQ_IODEV; break;
-      case EVENT_YIELD: ev.event = EVENT_YIELD; break;
+      case 11: ev.event = EVENT_YIELD; break;
       case EVENT_SYSCALL: ev.event = EVENT_SYSCALL; break;
       case EVENT_PAGEFAULT: ev.event = EVENT_PAGEFAULT; break;
       default: ev.event = EVENT_ERROR; break;
     }
-
+    /*
+    printf("mcause = 0x%x, mstatus = 0x%x, mepc = 0x%x\n",
+       c->mcause, c->mstatus, c->mepc);
+    for(int i = 0; i < 32; i++) {
+        printf("x%d = 0x%x\n", i, c->gpr[i]);
+    }
+    */
     c = user_handler(ev, c);
     assert(c != NULL);
   }

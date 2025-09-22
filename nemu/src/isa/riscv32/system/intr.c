@@ -23,10 +23,12 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   cpu.mepc = epc;
 
   // 保存异常号（mcause）
+  //Log("NO = %d", NO);
   cpu.mcause = NO;
 
   // 目前我们不实现 mstatus 的复杂位，只要能跑通 yield 即可
   // 在真正的 RISC-V 中，还需要修改 MPIE、MIE 等位，但这里忽略
+  cpu.mstatus = 0x1800;
 
   // 返回 trap 入口地址 (mtvec)
   return cpu.mtvec;
