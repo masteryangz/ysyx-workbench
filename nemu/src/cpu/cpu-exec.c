@@ -34,7 +34,6 @@ CPU_state cpu = {};
 uint64_t g_nr_guest_inst = 0;
 static uint64_t g_timer = 0; // unit: us
 static bool g_print_step = false;
-vaddr_t tmp_mepc = 0;
 
 void device_update();
 char *NEMU_STATE();
@@ -63,6 +62,7 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
     }
   }
 #endif
+/*
 #ifdef CONFIG_ETRACE
   if (cpu.mepc != tmp_mepc) {
     nemu_state.state = NEMU_STOP;
@@ -70,8 +70,8 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
       _this->pc, cpu.mepc, cpu.mstatus, cpu.mcause, cpu.mtvec);
     tmp_mepc = cpu.mepc;
   }
-
 #endif
+*/
 }
 
 static void exec_once(Decode *s, vaddr_t pc) {

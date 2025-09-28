@@ -19,18 +19,14 @@ word_t isa_raise_intr(word_t NO, vaddr_t epc) {
   /* TODO: Trigger an interrupt/exception with ``NO''.
    * Then return the address of the interrupt/exception vector.
    */
-  // 保存异常返回地址
   cpu.mepc = epc;
-
-  // 保存异常号（mcause）
-  //Log("NO = %d", NO);
   cpu.mcause = NO;
-
-  // 目前我们不实现 mstatus 的复杂位，只要能跑通 yield 即可
-  // 在真正的 RISC-V 中，还需要修改 MPIE、MIE 等位，但这里忽略
   cpu.mstatus = 0x1800;
-
-  // 返回 trap 入口地址 (mtvec)
+#ifdef CONFIG_ETRACE
+  //nemu_state.state = NEMU_STOP;
+  Etrace("pc = %08x: Exception/Interrupt! mepc = 0x%08x, mstatus = 0x%08x, mcause = %d, mtvec = 0x%08x\n",
+    cpu.pc, cpu.mepc, cpu.mstatus, cpu.mcause, cpu.mtvec);
+#endif
   return cpu.mtvec;
 }
 
