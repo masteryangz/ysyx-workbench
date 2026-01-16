@@ -107,6 +107,22 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
             adder1.io.add1  := io.pc
             adder1.io.add2  := io.imm 
         }
+        is("b1110011".U) {
+            switch(io.instr) {
+                is("b00000000000000000000000001110011".U) { // ECALL
+                    io.valid    := true.B
+                }
+                is("b00000000000100000000000001110011".U) { // EBREAK
+                    io.valid    := true.B
+                }
+                is("b00010000001000000000000001110011".U) { // MRET
+                    io.valid    := true.B
+                }
+                is("b00010000001000000000000001110011".U) { // MRET
+                    io.valid    := true.B
+                }
+            }
+        }
         // S-type
         is("b0100011".U) {
             switch(io.funct3) {

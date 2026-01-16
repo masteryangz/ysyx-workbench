@@ -64,7 +64,7 @@ class Decoder(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 
     switch(io.Op) {
         // I-type
-        is(Seq("b0010011".U, "b0000011".U, "b1100111".U)) {
+        is(Seq("b0010011".U, "b0000011".U, "b1100111".U, "b1110011".U)) {
             io.imm := io.instr(DATA_WIDTH-1, 20).asSInt.pad(DATA_WIDTH).asUInt
         }
         // U-type
