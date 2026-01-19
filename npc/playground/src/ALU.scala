@@ -118,9 +118,6 @@ class ALU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Mod
                 is("b00010000001000000000000001110011".U) { // MRET
                     io.valid    := true.B
                 }
-                is("b00010000001000000000000001110011".U) { // MRET
-                    io.valid    := true.B
-                }
             }
         }
         // S-type
