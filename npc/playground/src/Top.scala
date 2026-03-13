@@ -11,8 +11,8 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 
   // create new module
   val instrfet  = Module(new IF())
-  val decoder   = Module(new Decoder())
-  val alu       = Module(new ALU())
+  val id        = Module(new ID())
+  val ex        = Module(new EX())
   val dpiEnd    = Module(new DPIEnd)
   val isEbreak  = instrfet.io.instr === "h00100073".U
   val trapReg   = RegNext(isEbreak, false.B)
@@ -21,34 +21,34 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   // connect
   instrfet.io.clock       := clock
   instrfet.io.reset       := reset
-  io.goodTrap             := decoder.io.goodTrap
-  decoder.io.rdata        := instrfet.io.rdata
-  decoder.io.valid        := alu.io.valid
-  decoder.io.pc           := instrfet.io.pc
-  decoder.io.instr        := instrfet.io.instr
-  decoder.io.wdata        := alu.io.wdata
-  decoder.io.rwen         := alu.io.rwen
-  decoder.io.raddr        := instrfet.io.addr
-  alu.io.rdata1           := decoder.io.rdata1
-  alu.io.rdata2           := decoder.io.rdata2
-  alu.io.Op               := decoder.io.Op
-  alu.io.funct3           := decoder.io.funct3
-  alu.io.funct7           := decoder.io.funct7
-  alu.io.imm              := decoder.io.imm
-  alu.io.pc               := instrfet.io.pc
-  instrfet.io.target      := alu.io.target
-  instrfet.io.is_jump     := alu.io.is_jump
-  instrfet.io.valid       := alu.io.valid
-  instrfet.io.wen         := alu.io.mwen
-  instrfet.io.addr        := alu.io.addr
-  instrfet.io.wdata       := alu.io.wdata
-  instrfet.io.wmask       := decoder.io.wmask
+  io.goodTrap             := id.io.goodTrap
+  id.io.rdata             := instrfet.io.rdata
+  id.io.valid             := ex.io.valid
+  id.io.pc                := instrfet.io.pc
+  id.io.instr             := instrfet.io.instr
+  id.io.wdata             := ex.io.wdata
+  id.io.rwen              := ex.io.rwen
+  id.io.raddr             := instrfet.io.addr
+  ex.io.rdata1            := id.io.rdata1
+  ex.io.rdata2            := id.io.rdata2
+  ex.io.Op                := id.io.Op
+  ex.io.funct3            := id.io.funct3
+  ex.io.funct7            := id.io.funct7
+  ex.io.imm               := id.io.imm
+  ex.io.pc                := instrfet.io.pc
+  instrfet.io.target      := ex.io.target
+  instrfet.io.is_jump     := ex.io.is_jump
+  instrfet.io.valid       := ex.io.valid
+  instrfet.io.wen         := ex.io.mwen
+  instrfet.io.addr        := ex.io.addr
+  instrfet.io.wdata       := ex.io.wdata
+  instrfet.io.wmask       := id.io.wmask
   dpiEnd.io.trap          := trapPulse
 
 
   dontTouch(instrfet.io)
-  dontTouch(decoder.io)
-  dontTouch(alu.io)
+  dontTouch(id.io)
+  dontTouch(ex.io)
   dontTouch(dpiEnd.io.trap)
 
 }
