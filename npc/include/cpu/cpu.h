@@ -20,10 +20,17 @@
 
 void cpu_exec(uint64_t n);
 
-void set_nemu_state(int state, vaddr_t pc, int halt_ret);
+void set_npc_state(int state, vaddr_t pc, int halt_ret);
 void invalid_inst(vaddr_t thispc);
 
-#define NEMUTRAP(thispc, code) set_nemu_state(NEMU_END, thispc, code)
+//#define NPCTRAP(thispc, code) set_npc_state(NEMU_END, thispc, code)
+#ifdef __cplusplus
+extern "C" {
+#endif
+void NPCTRAP(vaddr_t thispc, int code);
+#ifdef __cplusplus
+}
+#endif
 #define INV(thispc) invalid_inst(thispc)
 
 #endif

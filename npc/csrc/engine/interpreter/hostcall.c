@@ -18,7 +18,7 @@
 #include <isa.h>
 #include <cpu/difftest.h>
 
-void set_nemu_state(int state, vaddr_t pc, int halt_ret) {
+void set_npc_state(int state, vaddr_t pc, int halt_ret) {
   difftest_skip_ref();
   nemu_state.state = state;
   nemu_state.halt_pc = pc;
@@ -47,5 +47,5 @@ void invalid_inst(vaddr_t thispc) {
         "* The machine is always right!\n"
         "* Every line of untested code is always wrong!\n\n", ANSI_FG_RED), isa_logo);
 
-  set_nemu_state(NEMU_ABORT, thispc, -1);
+  set_npc_state(NEMU_ABORT, thispc, -1);
 }
