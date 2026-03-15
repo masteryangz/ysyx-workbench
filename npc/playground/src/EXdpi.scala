@@ -5,7 +5,7 @@ import chisel3.experimental._
 
 class EXdpi extends BlackBox {
   val io = IO(new Bundle {
-    val trap = Input(Bool()) 
+    val isEbreak = Input(Bool()) 
   })
 }
 

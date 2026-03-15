@@ -59,7 +59,7 @@ class CSRIO(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Bundle {
     val nextPC       = Output(UInt(DATA_WIDTH.W))
 }
 
-class ALUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
+class EXIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val wdata           = Output(UInt(DATA_WIDTH.W))
     val addr            = Output(UInt(DATA_WIDTH.W))
     val rwen            = Output(Bool())
@@ -80,21 +80,4 @@ class adderIO(DATA_WIDTH: Int = 32) extends Bundle {
     val add1   = Input(UInt(DATA_WIDTH.W))
     val add2   = Input(UInt(DATA_WIDTH.W))
     val result = Output(UInt(DATA_WIDTH.W))
-}
-
-class EXIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
-    val wdata           = Output(UInt(DATA_WIDTH.W))
-    val addr            = Output(UInt(DATA_WIDTH.W))
-    val rwen            = Output(Bool())
-    val is_jump         = Output(Bool())
-    val target          = Output(UInt(DATA_WIDTH.W))
-    val valid           = Output(Bool())
-    val mwen            = Output(Bool())
-    val rdata1          = Input(UInt(DATA_WIDTH.W))
-    val rdata2          = Input(UInt(DATA_WIDTH.W))
-    val Op              = Input(UInt(7.W))
-    val imm             = Input(UInt(DATA_WIDTH.W))
-    val funct3          = Input(UInt(3.W))
-    val funct7          = Input(UInt(7.W))
-    val pc              = Input(UInt(DATA_WIDTH.W))
 }

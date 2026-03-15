@@ -14,12 +14,14 @@ class CSR(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Module {
   val mcause  = RegInit(0.U(32.W))
 
   // read
-  io.rdata := MuxLookup(io.addr, 0.U, Seq(
-    "h300".U -> mstatus,
-    "h305".U -> mtvec,
-    "h341".U -> mepc,
-    "h342".U -> mcause
-  ))
+  io.rdata := MuxLookup(io.addr, 0.U(DATA_WIDTH.W))(
+    Seq(
+      "h300".U -> mstatus,
+      "h305".U -> mtvec,
+      "h341".U -> mepc,
+      "h342".U -> mcause
+    )
+  )
 
   // write
   when(io.wen) {
