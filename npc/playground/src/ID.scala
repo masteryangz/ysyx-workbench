@@ -31,7 +31,8 @@ class ID(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
     io.funct7       := io.instr(31, 25)
     io.imm          := 0.U
     io.wmask        := 0.U
-    io.goodTrap     := regfile.io.goodTrap
+    io.R10           := regfile.io.R10 // pass R10 to IDIO for DPI use
+    //io.goodTrap     := regfile.io.goodTrap
 
     // Byte / halfword selection
     val byteShifted  = (io.rdata >> (io.raddr(1,0) << 3)).asUInt  // pick byte

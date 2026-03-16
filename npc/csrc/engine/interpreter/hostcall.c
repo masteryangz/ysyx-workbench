@@ -13,10 +13,15 @@
 * See the Mulan PSL v2 for more details.
 ***************************************************************************************/
 
+#include <cpu/cpu.h>
 #include <utils.h>
 #include <cpu/ifetch.h>
 #include <isa.h>
 #include <cpu/difftest.h>
+
+void NPCTRAP(vaddr_t thispc, int code) {
+  set_npc_state(NEMU_END, thispc, code);
+}
 
 void set_npc_state(int state, vaddr_t pc, int halt_ret) {
   difftest_skip_ref();

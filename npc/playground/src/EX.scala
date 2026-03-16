@@ -27,6 +27,14 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
     io.valid        := false.B
     io.mwen         := false.B
     exdpi.io.isEbreak := false.B
+    exdpi.io.pc       := io.pc
+    exdpi.io.R10      := io.R10 // pass R10 to DPI
+    CSR.io.pc        := io.pc
+    CSR.io.addr      := io.imm(11,0) // use imm as addr
+    CSR.io.wdata     := io.rdata2
+    CSR.io.wen       := false.B
+    CSR.io.ecall     := false.B
+    CSR.io.mret      := false.B
 
     // case switch
     switch(io.Op) {
@@ -113,13 +121,13 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
         is("b1110011".U) {
             switch(io.pc) {
                 is("b00000000000000000000000001110011".U) { // ECALL
-                    io.valid    := true.B
+                    CSR.io.ecall        := true.B
                 }
                 is("b00000000000100000000000001110011".U) { // EBREAK
-                    exdpi.io.isEbreak := true.B
+                    exdpi.io.isEbreak   := true.B
                 }
                 is("b00010000001000000000000001110011".U) { // MRET
-                    io.valid    := true.B
+                    CSR.io.mret         := true.B
                 }
             }
         }

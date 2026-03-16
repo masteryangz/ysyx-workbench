@@ -27,7 +27,8 @@ class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val wen         = Input(Bool())
     val rdata1      = Output(UInt(DATA_WIDTH.W))
     val rdata2      = Output(UInt(DATA_WIDTH.W))
-    val goodTrap    = Output(Bool()) 
+    val R10         = Output(UInt(DATA_WIDTH.W))    // expose R10 for DPI use
+    //val goodTrap    = Output(Bool()) 
 }
 
 class IDIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
@@ -44,8 +45,9 @@ class IDIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val imm             = Output(UInt(DATA_WIDTH.W))
     val funct3          = Output(UInt(3.W))
     val funct7          = Output(UInt(7.W))
-    val goodTrap        = Output(Bool())
+    //val goodTrap        = Output(Bool())
     val wmask           = Output(UInt(4.W))
+    val R10             = Output(UInt(DATA_WIDTH.W)) // pass R10 to IDIO for DPI use
 }
 
 class CSRIO(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Bundle {
@@ -74,6 +76,7 @@ class EXIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val funct3          = Input(UInt(3.W))
     val funct7          = Input(UInt(7.W))
     val pc              = Input(UInt(DATA_WIDTH.W))
+    val R10             = Input(UInt(DATA_WIDTH.W)) // pass R10 to EX for DPI use
 }
 
 class adderIO(DATA_WIDTH: Int = 32) extends Bundle {
