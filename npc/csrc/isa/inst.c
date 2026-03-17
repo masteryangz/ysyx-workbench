@@ -14,7 +14,7 @@
 ***************************************************************************************/
 
 #include <reg/reg.h>
-#include <cpu/cpu.h>
+//#include <cpu/cpu.h>
 #include <cpu/ifetch.h>
 #include <cpu/decode.h>
 

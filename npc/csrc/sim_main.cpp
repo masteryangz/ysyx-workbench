@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     sim_time++;
   }
 */
-  printf("sim_main finished with %s trap\n", top->io_goodTrap ? "good" : "bad");
+  //printf("sim_main finished with %s trap\n", top->io_goodTrap ? "good" : "bad");
   sim_exit();
   delete top;
   delete tfp;

@@ -5,7 +5,7 @@ module EXdpi #(
   input [DATA_WIDTH-1:0] pc,
   input [DATA_WIDTH-1:0] R10
 );
-  import "DPI-C" context function void NPCTRAP(input int unsigned pc, input int unsigned halt_ret);
+  import "DPI-C" context function void NPCTRAP(input int pc, input int halt_ret);
   reg called;
 
   initial called = 0;

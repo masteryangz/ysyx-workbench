@@ -27,7 +27,11 @@ void invalid_inst(vaddr_t thispc);
 #ifdef __cplusplus
 extern "C" {
 #endif
-void NPCTRAP(vaddr_t thispc, int code);
+//void NPCTRAP(vaddr_t thispc, int code);
+void NPCTRAP(int pc, int code) {
+  //npctrap_wrapper((vaddr_t)pc, code);
+  set_npc_state(NEMU_END, (vaddr_t)pc, code);
+}
 #ifdef __cplusplus
 }
 #endif

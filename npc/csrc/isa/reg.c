@@ -16,7 +16,7 @@
 #include <isa.h>
 #include <reg/reg.h>
 //#include <sim_main.h>
-#define GET_RF_CASE(i) case i: return top->rootp->Top__DOT__decoder__DOT__regfile__DOT__rf_##i;
+#define GET_RF_CASE(i) case i: return top->rootp->Top__DOT__id__DOT__regfile__DOT__rf_##i;
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
