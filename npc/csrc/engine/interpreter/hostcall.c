@@ -19,8 +19,8 @@
 #include <isa.h>
 #include <cpu/difftest.h>
 
-void NPCTRAP(vaddr_t thispc, int code) {
-  set_npc_state(NEMU_END, thispc, code);
+void NPCTRAP(int pc, int code) {
+  set_npc_state(NEMU_END, (vaddr_t)pc, code);
 }
 
 void set_npc_state(int state, vaddr_t pc, int halt_ret) {
