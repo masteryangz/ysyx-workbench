@@ -20,12 +20,14 @@
 #include <cpu/difftest.h>
 
 void NPCTRAP(int pc, int code) {
+  Log("NPCTRAP called\n");
   set_npc_state(NEMU_END, (vaddr_t)pc, code);
 }
 
 void set_npc_state(int state, vaddr_t pc, int halt_ret) {
   difftest_skip_ref();
   nemu_state.state = state;
+  Log("pc = " FMT_WORD ", halt_ret = %d", pc, halt_ret);
   nemu_state.halt_pc = pc;
   nemu_state.halt_ret = halt_ret;
 }

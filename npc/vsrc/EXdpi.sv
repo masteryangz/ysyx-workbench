@@ -10,10 +10,10 @@ module EXdpi #(
 
   initial called = 0;
 
-  always @(isEbreak) begin
+  always @(posedge isEbreak) begin
     $display("[VERILOG] Ebreak triggered = %b", isEbreak);
     if (isEbreak && !called) begin
-      NPCTRAP(pc, R10); // 1 for Ebreak
+      NPCTRAP(pc, R10);
       called = 1;
     end
   end

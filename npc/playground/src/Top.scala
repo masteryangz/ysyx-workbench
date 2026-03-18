@@ -13,7 +13,7 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   val instrfet  = Module(new IF())
   val id        = Module(new ID())
   val ex        = Module(new EX())
-  val dpiEnd    = Module(new DPIEnd)
+  val dpiEnd    = Module(new DPIEnd(DATA_WIDTH))
   val isEbreak  = instrfet.io.instr === "h00100073".U
   val trapReg   = RegNext(isEbreak, false.B)
   val trapPulse = isEbreak && !trapReg // 只在 isEbreak 从 0 变成 1 的时钟沿为 true
@@ -45,6 +45,7 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   instrfet.io.wdata       := ex.io.wdata
   instrfet.io.wmask       := id.io.wmask
   dpiEnd.io.trap          := trapPulse
+  dpiEnd.io.pc            := instrfet.io.pc
 
 
   dontTouch(instrfet.io)
