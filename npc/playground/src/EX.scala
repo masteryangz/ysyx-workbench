@@ -130,6 +130,19 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
                     CSR.io.mret         := true.B
                 }
             }
+            switch(io.funct3) {
+                is("b001".U) { // CSRRW
+                    CSR.io.wen       := true.B
+                }
+                is("b010".U) { // CSRRS
+                    CSR.io.wen       := true.B
+                    CSR.io.wdata     := io.rdata1 | io.rdata2
+                }
+                is("b011".U) { // CSRRC
+                    CSR.io.wen       := true.B
+                    CSR.io.wdata     := (~io.rdata1).asUInt & io.rdata2
+                }
+            }
         }
         // S-type
         is("b0100011".U) {
