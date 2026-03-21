@@ -8,10 +8,10 @@ import chisel3.experimental.IntParam
 class CSR(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Module {
   val io = IO(new CSRIO())
 
-  val mstatus = RegInit(0.U(32.W))
-  val mtvec   = RegInit(0.U(32.W))
-  val mepc    = RegInit(0.U(32.W))
-  val mcause  = RegInit(0.U(32.W))
+  val mstatus = RegInit(0.U(DATA_WIDTH.W))
+  val mtvec   = RegInit(0.U(DATA_WIDTH.W))
+  val mepc    = RegInit(0.U(DATA_WIDTH.W))
+  val mcause  = RegInit(0.U(DATA_WIDTH.W))
 
   // read
   io.rdata := MuxLookup(io.addr, 0.U(DATA_WIDTH.W))(
@@ -41,6 +41,6 @@ class CSR(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Module {
   }
 
   //io.nextPC := Mux(io.ecall, mtvec, Mux(io.mret, mepc, 0.U))
-  io.nextPC := Mux(io.ecall, mtvec, 0.U)
+  io.nextPC := mtvec
 
 }

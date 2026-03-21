@@ -11,6 +11,8 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
     val adder1 = Module(new adder(DATA_WIDTH))
     val adder2 = Module(new adder(DATA_WIDTH))
 
+    val mreg = RegInit(0.U(DATA_WIDTH.W))
+
     //concatenate together
     val Funct = Cat(io.funct3, io.funct7)
 
@@ -31,7 +33,7 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
     exdpi.io.R10      := io.R10 // pass R10 to DPI
     CSR.io.pc        := io.pc
     CSR.io.addr      := io.imm(11,0) // use imm as addr
-    CSR.io.wdata     := io.rdata2
+    CSR.io.wdata     := io.rdata1
     CSR.io.wen       := false.B
     CSR.io.ecall     := false.B
     CSR.io.mret      := false.B
@@ -122,6 +124,8 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
             switch(io.pc) {
                 is("b00000000000000000000000001110011".U) { // ECALL
                     CSR.io.ecall        := true.B
+                    io.is_jump          := true.B
+                    io.target           := CSR.io.nextPC
                 }
                 is("b00000000000100000000000001110011".U) { // EBREAK
                     exdpi.io.isEbreak   := true.B
@@ -132,15 +136,21 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
             }
             switch(io.funct3) {
                 is("b001".U) { // CSRRW
-                    CSR.io.wen       := true.B
+                    CSR.io.wen      := true.B
+                    io.wdata        := CSR.io.rdata
+                    io.rwen         := true.B
                 }
                 is("b010".U) { // CSRRS
                     CSR.io.wen       := true.B
                     CSR.io.wdata     := io.rdata1 | io.rdata2
+                    io.wdata         := CSR.io.rdata
+                    io.rwen          := true.B
                 }
                 is("b011".U) { // CSRRC
                     CSR.io.wen       := true.B
                     CSR.io.wdata     := (~io.rdata1).asUInt & io.rdata2
+                    io.wdata         := CSR.io.rdata
+                    io.rwen          := true.B
                 }
             }
         }
