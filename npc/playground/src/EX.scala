@@ -121,7 +121,8 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
             adder1.io.add2  := io.imm 
         }
         is("b1110011".U) {
-            switch(io.pc) {
+            /*
+            switch(io.imm(11,0)) {
                 is("b00000000000000000000000001110011".U) { // ECALL
                     CSR.io.ecall        := true.B
                     io.is_jump          := true.B
@@ -134,21 +135,35 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
                     CSR.io.mret         := true.B
                 }
             }
+            */
             switch(io.funct3) {
+                is("b000".U) {
+                    switch(io.imm(11,0)) {
+                        is("b000000000000".U) { // ECALL
+                            CSR.io.ecall        := true.B
+                            io.is_jump          := true.B
+                            io.target           := CSR.io.nextPC
+                        }
+                        is("b001100000010".U) { // MRET
+                            CSR.io.mret         := true.B
+                        }
+                    }
+                }
                 is("b001".U) { // CSRRW
                     CSR.io.wen      := true.B
+                    CSR.io.wdata    := io.rdata1
                     io.wdata        := CSR.io.rdata
                     io.rwen         := true.B
                 }
                 is("b010".U) { // CSRRS
                     CSR.io.wen       := true.B
-                    CSR.io.wdata     := io.rdata1 | io.rdata2
+                    CSR.io.wdata     := io.rdata1 | CSR.io.rdata
                     io.wdata         := CSR.io.rdata
                     io.rwen          := true.B
                 }
                 is("b011".U) { // CSRRC
                     CSR.io.wen       := true.B
-                    CSR.io.wdata     := (~io.rdata1).asUInt & io.rdata2
+                    CSR.io.wdata     := (~io.rdata1).asUInt & CSR.io.rdata
                     io.wdata         := CSR.io.rdata
                     io.rwen          := true.B
                 }
