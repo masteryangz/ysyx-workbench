@@ -146,6 +146,8 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
                         }
                         is("b001100000010".U) { // MRET
                             CSR.io.mret         := true.B
+                            io.is_jump          := true.B
+                            io.target           := CSR.io.nextPC
                         }
                     }
                 }

@@ -40,7 +40,6 @@ class CSR(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Module {
     mstatus := 0x1800.U
   }
 
-  //io.nextPC := Mux(io.ecall, mtvec, Mux(io.mret, mepc, 0.U))
-  io.nextPC := mtvec
+  io.nextPC := Mux(io.ecall, mtvec, Mux(io.mret, mepc, 0.U))
 
 }
