@@ -10,37 +10,40 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   })
 
   // create new module
-  val instrfet  = Module(new IF())
-  val id        = Module(new ID())
-  val ex        = Module(new EX())
+  val ifu  = Module(new IFU())
+  val idu        = Module(new IDU())
+  val exu        = Module(new EXU())
   val dpiEnd    = Module(new DPIEnd(DATA_WIDTH))
-  val isEbreak  = instrfet.io.instr === "h00100073".U
+  val isEbreak  = ifu.io.instr === "h00100073".U
   val trapReg   = RegNext(isEbreak, false.B)
   val trapPulse = isEbreak && !trapReg // 只在 isEbreak 从 0 变成 1 的时钟沿为 true
 
   // connect
-  instrfet.io.clock       := clock
-  instrfet.io.reset       := reset
+  StageConnect(ifu.io.out, idu.io.in)
+  StageConnect(idu.io.out, exu.io.in)
+  StageConnect(exu.io.out, wbu.io.in)
+  ifu.io.clock       := clock
+  ifu.io.reset       := reset
   //io.goodTrap             := id.io.goodTrap
-  id.io.rdata             := instrfet.io.rdata
-  id.io.valid             := ex.io.valid
-  id.io.pc                := instrfet.io.pc
-  id.io.instr             := instrfet.io.instr
-  id.io.wdata             := ex.io.wdata
-  id.io.rwen              := ex.io.rwen
-  id.io.raddr             := instrfet.io.addr
-  ex.io.R10               := id.io.R10 // pass R10 from ID to EX for DPI use
-  ex.io.rdata1            := id.io.rdata1
-  ex.io.rdata2            := id.io.rdata2
-  ex.io.Op                := id.io.Op
-  ex.io.funct3            := id.io.funct3
-  ex.io.funct7            := id.io.funct7
-  ex.io.imm               := id.io.imm
-  ex.io.pc                := instrfet.io.pc
-  instrfet.io.target      := ex.io.target
-  instrfet.io.is_jump     := ex.io.is_jump
-  instrfet.io.valid       := ex.io.valid
-  instrfet.io.wen         := ex.io.mwen
+  idu.io.rdata             := ifu.io.rdata
+  idu.io.valid             := exu.io.valid
+  idu.io.pc                := ifu.io.pc
+  idu.io.instr             := ifu.io.instr
+  idu.io.wdata             := exu.io.wdata
+  idu.io.rwen              := exu.io.rwen
+  idu.io.raddr             := ifu.io.addr
+  exu.io.R10               := idu.io.R10 // pass R10 from ID to EX for DPI use
+  exu.io.rdata1            := idu.io.rdata1
+  exu.io.rdata2            := idu.io.rdata2
+  exu.io.Op                := idu.io.Op
+  exu.io.funct3            := idu.io.funct3
+  exu.io.funct7            := idu.io.funct7
+  exu.io.imm               := idu.io.imm
+  exu.io.pc                := ifu.io.pc
+  ifu.io.target      := exu.io.target
+  ifu.io.is_jump     := exu.io.is_jump
+  ifu.io.valid       := exu.io.valid
+  ifu.io.wen         := exu.io.mwen
   instrfet.io.addr        := ex.io.addr
   instrfet.io.wdata       := ex.io.wdata
   instrfet.io.wmask       := id.io.wmask
@@ -53,4 +56,15 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   dontTouch(ex.io)
   dontTouch(dpiEnd.io.trap)
 
+}
+
+object StageConnect {
+  def apply[T <: Data](left: DecoupledIO[T], right: DecoupledIO[T]) = {
+    val arch = "single"
+    // 为展示抽象的思想, 此处代码省略了若干细节
+    if      (arch == "single")   { right.bits := left.bits }
+    else if (arch == "multi")    { right <> left }
+    else if (arch == "pipeline") { right <> RegEnable(left, left.fire) }
+    else if (arch == "ooo")      { right <> Queue(left, 16) }
+  }
 }

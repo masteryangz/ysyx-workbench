@@ -3,8 +3,8 @@ package npc
 import chisel3._
 import chisel3.util._
 
-class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
-    val io = IO(new EXIO())
+class EXU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+    val io = IO(new EXUIO())
     val exdpi = Module(new EXdpi())
     val CSR = Module(new CSR(ADDR_WIDTH, DATA_WIDTH))
 
@@ -121,21 +121,6 @@ class EX(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Modu
             adder1.io.add2  := io.imm 
         }
         is("b1110011".U) {
-            /*
-            switch(io.imm(11,0)) {
-                is("b00000000000000000000000001110011".U) { // ECALL
-                    CSR.io.ecall        := true.B
-                    io.is_jump          := true.B
-                    io.target           := CSR.io.nextPC
-                }
-                is("b00000000000100000000000001110011".U) { // EBREAK
-                    exdpi.io.isEbreak   := true.B
-                }
-                is("b00010000001000000000000001110011".U) { // MRET
-                    CSR.io.mret         := true.B
-                }
-            }
-            */
             switch(io.funct3) {
                 is("b000".U) {
                     switch(io.imm(11,0)) {

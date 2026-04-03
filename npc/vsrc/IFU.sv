@@ -1,4 +1,4 @@
-module IF #(
+module IFU #(
     parameter pcInc = 4,
     parameter ADDR_WIDTH = 5,
     parameter DATA_WIDTH = 32

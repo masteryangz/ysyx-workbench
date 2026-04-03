@@ -3,7 +3,7 @@ package npc
 import chisel3._
 import chisel3.util._
 
-class IFIO(pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bundle {
+class IFUIO(pcInc: Int = 4, DATA_WIDTH: Int = 32) extends Bundle {
     val pc          = Output(UInt(DATA_WIDTH.W))    // current PC
     val instr       = Output(UInt(DATA_WIDTH.W))    // fetched instruction
     val rdata       = Output(UInt(DATA_WIDTH.W))    // read data (for store instructions)
@@ -31,7 +31,7 @@ class RegFileIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     //val goodTrap    = Output(Bool()) 
 }
 
-class IDIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
+class IDUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val pc              = Input(UInt(DATA_WIDTH.W)) // current PC
     val instr           = Input(UInt(DATA_WIDTH.W))
     val wdata           = Input(UInt(DATA_WIDTH.W))
@@ -61,7 +61,7 @@ class CSRIO(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Bundle {
     val nextPC       = Output(UInt(DATA_WIDTH.W))
 }
 
-class EXIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
+class EXUIO(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Bundle {
     val wdata           = Output(UInt(DATA_WIDTH.W))
     val addr            = Output(UInt(DATA_WIDTH.W))
     val rwen            = Output(Bool())

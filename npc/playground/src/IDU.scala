@@ -3,8 +3,8 @@ package npc
 import chisel3._
 import chisel3.util._
 
-class ID(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
-    val io = IO(new IDIO())
+class IDU(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+    val io = IO(new IDUIO())
 
     // Parse instruction
     val rs1       = io.instr(19, 15)
