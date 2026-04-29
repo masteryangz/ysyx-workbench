@@ -7,19 +7,20 @@ static Context* (*user_handler)(Event, Context*) = NULL;
 Context* __am_irq_handle(Context *c) {
   if (user_handler) {
     Event ev = {0};
-    switch (c->mcause) {
-      case 11: 
-        ev.event = EVENT_YIELD;
-        c->mepc += 4;
-        //printf("yield event, mepc = %08x\n", c->mepc);
-        break;
-      default: ev.event = EVENT_ERROR; break;
+    printf("a5 = 0x%d", c->gpr[15]);
+#ifdef __riscv_e
+    if (c->gpr[15] == -1) {
+#else
+    if (c->gpr[17] == -1) {
+#endif
+      ev.event = EVENT_YIELD;
+      c->mepc += 4;
+    } else {
+      ev.event = EVENT_ERROR;
     }
-
     c = user_handler(ev, c);
     assert(c != NULL);
   }
-
   return c;
 }
 
