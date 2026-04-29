@@ -30,16 +30,27 @@ Context* __am_irq_handle(Context *c) {
 
   if (user_handler) {
     Event ev = {0};
-    switch (c->mcause) {
+    //switch (c->mcause) {
+#ifdef __riscv_e
+    if (c->gpr[15] == -1) {
+#else
+    if (c->gpr[17] == -1) {
+#endif  
       //case EVENT_IRQ_TIMER: ev.event = EVENT_IRQ_TIMER; break;
       //case EVENT_IRQ_IODEV: ev.event = EVENT_IRQ_IODEV; break;
+      ev.event = EVENT_YIELD;
+      c->mepc += 4;
+      /*
       case 11: 
         ev.event = EVENT_YIELD;
         c->mepc += 4;
         break;
+      */
       //case EVENT_SYSCALL: ev.event = EVENT_SYSCALL; break;
       //case EVENT_PAGEFAULT: ev.event = EVENT_PAGEFAULT; break;
-      default: ev.event = EVENT_ERROR; break;
+      //default: ev.event = EVENT_ERROR; break;
+    } else {
+      ev.event = EVENT_ERROR;
     }
     /*
     printf("mcause = 0x%x, mstatus = 0x%x, mepc = 0x%x\n",
