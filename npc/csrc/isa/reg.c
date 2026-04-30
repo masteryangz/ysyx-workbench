@@ -16,7 +16,7 @@
 #include <isa.h>
 #include <reg/reg.h>
 //#include <sim_main.h>
-#define GET_RF_CASE(i) case i: return top->rootp->Top__DOT__id__DOT__regfile__DOT__rf_##i;
+#define GET_RF_CASE(i) case i: return top->rootp->Top__DOT__idu__DOT__regfile__DOT__rf_##i;
 const char *regs[] = {
   "$0", "ra", "sp", "gp", "tp", "t0", "t1", "t2",
   "s0", "s1", "a0", "a1", "a2", "a3", "a4", "a5",
@@ -64,8 +64,8 @@ word_t isa_reg_str2val(const char *s, bool *success) {
 }
 
 word_t get_pc() {
-  //Log("Getting pc = 0x%08x", top->rootp->Top__DOT__instrfet__DOT__pcReg);
-  return top->rootp->Top__DOT__instrfet__DOT__pcReg;
+  //Log("Getting pc = 0x%08x", top->rootp->Top__DOT__ifu__DOT__pcReg);
+  return top->rootp->Top__DOT__ifu__DOT__pcReg;
 }
 
 word_t get_gpr(int idx) {
