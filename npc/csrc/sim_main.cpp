@@ -38,6 +38,7 @@ void sim_exit() {
 
 int main(int argc, char *argv[]) {
   //Log("Starting simulation...\n");
+  TODO("replace when and switch with Mux1H");
   sim_init();
   //Log("Simulation initialized.\n");
   init_monitor(argc, argv);
