@@ -2,6 +2,7 @@ package npc
 
 import chisel3._
 import chisel3.experimental.IntParam
+import parameters._
 
 //class IFU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends BlackBox(Map(
 class IFU extends BlackBox(Map(

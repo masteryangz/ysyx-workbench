@@ -2,6 +2,7 @@ package npc
 
 import chisel3._
 import chisel3.util._
+import parameters._
 
 //class IDU(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 class IDU extends Module {
@@ -43,6 +44,53 @@ class IDU extends Module {
     //val byteSelected = io.rdata(7,0)
     //val halfSelected = io.rdata(15,0)
 
+    // 1. Define the one-hot selection signals
+    val isLB  = io.funct3 === "b000".U
+    val isLH  = io.funct3 === "b001".U
+    val isLW  = io.funct3 === "b010".U
+    val isLBU = io.funct3 === "b100".U
+    val isLHU = io.funct3 === "b101".U
+
+    // 2. Use Mux1H for the 'result' signal
+    result := Mux1H(Seq(
+    isLB  -> Cat(Fill(24, byteSelected(7)), byteSelected),
+    isLH  -> Cat(Fill(16, halfSelected(15)), halfSelected),
+    isLW  -> io.rdata,
+    isLBU -> Cat(0.U(24.W), byteSelected),
+    isLHU -> Cat(0.U(16.W), halfSelected)
+    ))
+
+    // 3. Use Mux1H for the 'wmask' signal 
+    // Note: LBU and LHU are not included here as they didn't have assignments in your switch
+    io.wmask := Mux1H(Seq(
+    isLB -> "b0001".U,
+    isLH -> "b0011".U,
+    isLW -> "b1111".U
+    ))
+
+    // 1. Define Boolean signals for each Instruction Type
+    val isIType = io.Op === "b0010011".U || io.Op === "b0000011".U || 
+                io.Op === "b1100111".U || io.Op === "b1110011".U
+    val isUType = io.Op === "b0010111".U || io.Op === "b0110111".U
+    val isJType = io.Op === "b1101111".U
+    val isSType = io.Op === "b0100011".U
+    val isRType = io.Op === "b0110011".U
+    val isBType = io.Op === "b1100011".U
+
+    io.imm := Mux1H(Seq(
+    isIType -> (io.instr(31, 20).asSInt.pad(DATA_WIDTH).asUInt),
+    
+    isUType -> ((io.instr(31, 12).asSInt.pad(DATA_WIDTH).asUInt << 12)(DATA_WIDTH-1, 0)),
+    
+    isJType -> (Cat(io.instr(31), io.instr(19, 12), io.instr(20), io.instr(30, 21)).asSInt.pad(DATA_WIDTH).asUInt << 1),
+    
+    isSType -> (Cat(io.instr(31, 25), io.instr(11, 7)).asSInt.pad(DATA_WIDTH).asUInt),
+    
+    isRType -> (0.U),
+    
+    isBType -> (Cat(io.instr(31), io.instr(7), io.instr(30, 25), io.instr(11, 8)).asSInt.pad(DATA_WIDTH).asUInt << 1)
+    ))
+/* 
     switch(io.funct3) {
         is("b000".U) { // LB, SB
             result := Cat(Fill(24, byteSelected(7)), byteSelected)
@@ -63,7 +111,8 @@ class IDU extends Module {
             result := Cat(0.U(16.W), halfSelected)
         }
     }
-
+ */
+/* 
     switch(io.Op) {
         // I-type
         is(Seq("b0010011".U, "b0000011".U, "b1100111".U, "b1110011".U)) {
@@ -90,4 +139,5 @@ class IDU extends Module {
             io.imm := Cat(io.instr(DATA_WIDTH-1), io.instr(7), io.instr(30, 25), io.instr(11, 8)).asSInt.pad(DATA_WIDTH).asUInt << 1
         }
     }
+ */
 }

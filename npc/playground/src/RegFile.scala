@@ -3,6 +3,7 @@ package npc
 import chisel3._
 import chisel3.util._
 import chisel3.experimental.IntParam
+import parameters._
 
 
 //class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {

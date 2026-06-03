@@ -2,15 +2,16 @@ package npc
 
 import chisel3._
 import chisel3.util._
+import parameters._
 
 //class EXU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
 class EXU extends Module {
     val io = IO(new EXUIO())
     val exdpi = Module(new EXdpi())
-    val CSR = Module(new CSR(ADDR_WIDTH, DATA_WIDTH))
+    val CSR = Module(new CSR())
 
-    val adder1 = Module(new adder(DATA_WIDTH))
-    val adder2 = Module(new adder(DATA_WIDTH))
+    val adder1 = Module(new adder())
+    val adder2 = Module(new adder())
 
     val mreg = RegInit(0.U(DATA_WIDTH.W))
 

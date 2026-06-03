@@ -2,8 +2,10 @@ package npc
 
 import chisel3._
 import chisel3.util._
+import parameters._
 
-class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+//class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+class Top extends Module {
   val io = IO(new Bundle {
     //val pc            = Output(UInt((1<<ADDR_WIDTH).W))
     //val goodTrap      = Output(Bool()) // expose goodTrap signal
@@ -13,7 +15,7 @@ class Top(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
   val ifu  = Module(new IFU())
   val idu        = Module(new IDU())
   val exu        = Module(new EXU())
-  val dpiEnd    = Module(new DPIEnd(DATA_WIDTH))
+  val dpiEnd    = Module(new DPIEnd())
   val isEbreak  = ifu.io.instr === "h00100073".U
   val trapReg   = RegNext(isEbreak, false.B)
   val trapPulse = isEbreak && !trapReg // 只在 isEbreak 从 0 变成 1 的时钟沿为 true
