@@ -3,7 +3,8 @@ package npc
 import chisel3._
 import chisel3.util._
 
-class EXU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+//class EXU(pcInc: Int = 4, ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+class EXU extends Module {
     val io = IO(new EXUIO())
     val exdpi = Module(new EXdpi())
     val CSR = Module(new CSR(ADDR_WIDTH, DATA_WIDTH))

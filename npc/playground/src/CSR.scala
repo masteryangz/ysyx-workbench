@@ -5,7 +5,8 @@ import chisel3.util._
 import chisel3.experimental.IntParam
 
 
-class CSR(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Module {
+//class CSR(ADDR_WIDTH: Int = 12, DATA_WIDTH: Int = 32) extends Module {
+class CSR extends Module {
   val io = IO(new CSRIO())
 
   val mstatus = RegInit(0.U(DATA_WIDTH.W))

@@ -5,7 +5,8 @@ import chisel3.util._
 import chisel3.experimental.IntParam
 
 
-class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+//class RegFile(ADDR_WIDTH: Int = 5, DATA_WIDTH: Int = 32) extends Module {
+class RegFile extends Module {
   val io = IO(new RegFileIO())
 
   val rf = RegInit(VecInit(Seq.fill(1 << ADDR_WIDTH)(0.U(DATA_WIDTH.W))))
