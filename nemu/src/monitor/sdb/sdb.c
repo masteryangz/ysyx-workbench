@@ -77,6 +77,9 @@ static int cmd_info(char *args) {
       printf("Watchpoint %d: %s = 0x%08x\n", wp->NO, wp->expr, wp->value);
     }
   }
+  else if (strcmp(args, "c") == 0) {
+    isa_csr_display();
+  }
   else {
     printf("Unknown info command: %s\n", args);
   }

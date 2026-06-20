@@ -15,7 +15,20 @@ class CSR extends Module {
   val mepc    = RegInit(0.U(DATA_WIDTH.W))
   val mcause  = RegInit(0.U(DATA_WIDTH.W))
 
+  val isMstatus = io.addr === "h300".U
+  val isMtvec   = io.addr === "h305".U
+  val isMepc    = io.addr === "h341".U
+  val isMcause  = io.addr === "h342".U
+
   // read
+  io.rdata := Mux1H(Seq(
+    isMstatus -> mstatus,
+    isMtvec   -> mtvec,
+    isMepc    -> mepc,
+    isMcause  -> mcause
+  ))
+
+/* 
   io.rdata := MuxLookup(io.addr, 0.U(DATA_WIDTH.W))(
     Seq(
       "h300".U -> mstatus,
@@ -24,7 +37,7 @@ class CSR extends Module {
       "h342".U -> mcause
     )
   )
-
+ */
   // write
   when(io.wen) {
     switch(io.addr) {

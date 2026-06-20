@@ -23,6 +23,13 @@ const char *regs[] = {
   "s8", "s9", "s10", "s11", "t3", "t4", "t5", "t6"
 };
 
+void isa_csr_display() {
+  printf("mstatus: 0x%08x\n", cpu.mstatus);
+  printf("mepc: 0x%08x\n", cpu.mepc);
+  printf("mcause: 0x%08x\n", cpu.mcause);
+  printf("mtvec: 0x%08x\n", cpu.mtvec);
+}
+
 void isa_reg_display() {
   for (int i = 0; i < sizeof(regs) / sizeof(regs[0]); i++) {
     bool success = false;
